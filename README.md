@@ -1,222 +1,197 @@
-# Retain AI - Analytics Dashboard
+# 🎮 Retain AI
 
-AI-powered product management copilot for live games that transforms gameplay telemetry into actionable retention, monetization, and LiveOps insights.
+**AI-powered copilot for live game operations**
 
-## 🚀 Tech Stack
+Transform gameplay telemetry into actionable retention, monetization, and LiveOps insights using IBM Granite + AI workflows.
 
-- **Framework:** [Next.js 15](https://nextjs.org/) with App Router
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-- **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
-- **Icons:** [Lucide React](https://lucide.dev/)
-- **Theme:** [next-themes](https://github.com/pacocoursey/next-themes)
-- **Code Quality:** ESLint + Prettier
+[![Built with Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![IBM Granite](https://img.shields.io/badge/IBM-Granite-0f62fe?style=flat&logo=ibm)](https://www.ibm.com/granite)
 
-## ✨ Features
+---
 
-- ✅ Modern Next.js 15 with App Router and Server Components
-- ✅ Full TypeScript support with strict type checking
-- ✅ Tailwind CSS v4 with custom theme for analytics dashboards
-- ✅ shadcn/ui component library (Button, Card components included)
-- ✅ Dark mode support with system preference detection
-- ✅ Responsive navigation with active state indicators
-- ✅ Sample dashboard with KPI cards and placeholder charts
-- ✅ Clean project structure for scalability
-- ✅ ESLint and Prettier configured for code quality
+## 🎯 The Problem
 
-## 📁 Project Structure
+Game studios struggle to:
+- **Identify churn signals** before players leave
+- **Optimize monetization** without hurting retention
+- **Plan LiveOps events** based on player behavior patterns
+- **Make data-driven decisions** from massive telemetry datasets
 
-```
-retain-ai/
-├── app/                      # Next.js App Router
-│   ├── layout.tsx           # Root layout with theme provider
-│   ├── page.tsx             # Dashboard home page
-│   └── globals.css          # Global styles with CSS variables
-├── components/              # React components
-│   ├── ui/                  # shadcn/ui components
-│   │   ├── button.tsx
-│   │   └── card.tsx
-│   ├── nav.tsx              # Navigation component
-│   ├── theme-provider.tsx   # Theme context provider
-│   └── theme-toggle.tsx     # Dark mode toggle button
-├── lib/                     # Utility functions
-│   └── utils.ts             # cn() utility for class merging
-├── hooks/                   # Custom React hooks
-├── public/                  # Static assets
-├── components.json          # shadcn/ui configuration
-├── tsconfig.json           # TypeScript configuration
-└── tailwind.config.ts      # Tailwind CSS configuration
-```
+Traditional analytics tools show *what happened*. Retain AI tells you *what to do next*.
 
-## 🎨 Design System
+---
 
-The dashboard uses a carefully crafted color system optimized for analytics:
+## 💡 Our Solution
 
-### Light Mode
-- Background: Clean white (#ffffff)
-- Foreground: Dark gray for text
-- Primary: Dark for emphasis
-- Muted: Light gray for secondary elements
+Retain AI is an **AI-first analytics platform** that:
 
-### Dark Mode
-- Background: Deep dark (#0a0a0a)
-- Foreground: Light gray for text
-- Primary: Light for emphasis
-- Muted: Medium gray for secondary elements
+✅ **Ingests gameplay telemetry** (CSV, JSON, real-time streams)  
+✅ **Analyzes player behavior** using IBM Granite AI models  
+✅ **Generates actionable insights** for retention & monetization  
+✅ **Recommends LiveOps strategies** based on cohort analysis  
+✅ **Predicts churn risk** with ML-powered early warning system  
 
-### Chart Colors
-Five distinct colors for data visualization:
-- Chart 1: Blue (#3b82f6)
-- Chart 2: Green (#10b981)
-- Chart 3: Yellow (#f59e0b)
-- Chart 4: Purple (#a855f7)
-- Chart 5: Red (#ef4444)
+---
 
-## 🛠️ Getting Started
+## 🚀 Key Features
+
+### 📊 Smart Telemetry Upload
+- Drag-and-drop CSV/JSON file upload
+- Automatic schema detection
+- Real-time parsing with progress tracking
+- Support for custom delimiters and formats
+
+### 🤖 AI-Powered Analysis
+- **IBM Granite integration** for natural language insights
+- Automated cohort segmentation
+- Churn prediction models
+- Revenue optimization recommendations
+
+### 📈 Interactive Dashboards
+- Real-time KPI tracking
+- Player retention funnels
+- Monetization analytics
+- LiveOps event performance
+
+### 🎨 Modern UX
+- Dark mode optimized for long sessions
+- Responsive design for all devices
+- Fast, server-side rendered pages
+- Accessible UI components
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|----------|-----------|
+| **Frontend** | Next.js 15, React 19, TypeScript |
+| **Styling** | Tailwind CSS v4, shadcn/ui |
+| **AI/ML** | IBM Granite, Watsonx.ai |
+| **Data Processing** | CSV Parser, JSON validation |
+| **Deployment** | Vercel, Edge Functions |
+
+---
+
+## 🎬 Quick Start
 
 ### Prerequisites
-
-- Node.js 18.17 or later
-- npm, yarn, or pnpm
+- Node.js 18.17+
+- npm or yarn
 
 ### Installation
 
-1. Clone the repository:
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/retain-ai.git
 cd retain-ai
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Run the development server:
-```bash
+# Run development server
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) to see the dashboard.
 
-## 📝 Available Scripts
+---
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check code formatting
+## 📸 Screenshots
 
-## 🎯 Adding New Components
+> **Note:** Add screenshots here once the dashboard is deployed
 
-### Using shadcn/ui CLI
+### Dashboard Overview
+![Dashboard](public/dashboard-preview.png)
 
-Add new components from the shadcn/ui library:
+### Telemetry Upload
+![Upload](public/upload-preview.png)
 
-```bash
-npx shadcn@latest add [component-name]
+### AI Insights
+![Insights](public/insights-preview.png)
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐
+│   Game Client   │
+└────────┬────────┘
+         │ Telemetry Events
+         ▼
+┌─────────────────┐
+│  Retain AI API  │
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+┌────────┐ ┌──────────┐
+│ Parser │ │ IBM      │
+│ Engine │ │ Granite  │
+└────┬───┘ └────┬─────┘
+     │          │
+     ▼          ▼
+┌─────────────────┐
+│   Dashboard     │
+│   (Next.js)     │
+└─────────────────┘
 ```
 
-Example:
-```bash
-npx shadcn@latest add dialog
-npx shadcn@latest add dropdown-menu
-npx shadcn@latest add table
-```
+---
 
-### Available Components
+## 🎯 Use Cases
 
-Popular components for dashboards:
-- `badge` - Status indicators
-- `dialog` - Modal dialogs
-- `dropdown-menu` - Dropdown menus
-- `input` - Form inputs
-- `label` - Form labels
-- `select` - Select dropdowns
-- `table` - Data tables
-- `tabs` - Tab navigation
-- `toast` - Notifications
-- `tooltip` - Tooltips
+### 1. **Churn Prevention**
+Identify at-risk players 7 days before they leave. Get AI-recommended retention strategies.
 
-## 🎨 Customization
+### 2. **Monetization Optimization**
+Analyze spending patterns and optimize in-game offers for different player segments.
 
-### Theme Colors
+### 3. **LiveOps Planning**
+Plan events based on player activity patterns and predicted engagement.
 
-Edit `app/globals.css` to customize the color scheme:
+### 4. **A/B Test Analysis**
+Compare feature variants and get AI insights on which performs better.
 
-```css
-@theme inline {
-  --color-primary: 240 5.9% 10%;
-  --color-secondary: 240 4.8% 95.9%;
-  /* Add more custom colors */
-}
-```
+---
 
-### Navigation
+## 🔮 Roadmap
 
-Edit `components/nav.tsx` to add or modify navigation items:
+- [ ] Real-time telemetry streaming
+- [ ] Advanced ML models for churn prediction
+- [ ] Multi-game support
+- [ ] Custom dashboard builder
+- [ ] Slack/Discord integration for alerts
+- [ ] API for programmatic access
 
-```typescript
-const navigation = [
-  { name: "Dashboard", href: "/", icon: Home },
-  { name: "Analytics", href: "/analytics", icon: BarChart3 },
-  // Add more items
-]
-```
-
-## 📊 Dashboard Features
-
-The sample dashboard includes:
-
-- **KPI Cards**: Display key metrics with trend indicators
-- **Overview Chart**: Placeholder for time-series data visualization
-- **Recent Activity**: List of recent user interactions
-- **Quick Actions**: Common operations and tasks
-
-## 🔧 Configuration Files
-
-- `components.json` - shadcn/ui configuration
-- `tsconfig.json` - TypeScript compiler options
-- `eslint.config.mjs` - ESLint rules
-- `.prettierrc` - Prettier formatting rules
-- `next.config.ts` - Next.js configuration
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Import your repository on [Vercel](https://vercel.com)
-3. Vercel will automatically detect Next.js and configure the build
-
-### Other Platforms
-
-Build the application:
-```bash
-npm run build
-```
-
-The output will be in the `.next` folder. Follow your hosting provider's instructions for deploying Next.js applications.
-
-## 📚 Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [shadcn/ui Documentation](https://ui.shadcn.com)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
 
 ## 🙏 Acknowledgments
 
-- [Next.js](https://nextjs.org/) - The React Framework
-- [shadcn/ui](https://ui.shadcn.com) - Beautiful UI components
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [Lucide](https://lucide.dev/) - Beautiful icons
+Built with:
+- [IBM Granite](https://www.ibm.com/granite) - AI foundation models
+- [Next.js](https://nextjs.org/) - React framework
+- [shadcn/ui](https://ui.shadcn.com) - UI components
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+
+---
+
+## 📧 Contact
+
+Questions? Reach out at [your-email@example.com](mailto:your-email@example.com)
+
+**Built for [Hackathon Name] 2026**
