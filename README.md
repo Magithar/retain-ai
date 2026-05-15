@@ -192,6 +192,6 @@ Built with:
 
 ## 📧 Contact
 
-Questions? Reach out at [your-email@example.com](mailto:your-email@example.com)
+Questions? Reach out at [magithar8@gmail.com](mailto:magithar8@gmail.com)
 
-**Built for [Hackathon Name] 2026**
+**Built for IBM Bob Hackathon 2026**
