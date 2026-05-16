@@ -1,3 +1,5 @@
+> **📦 Project Recently Organized** - The codebase has been restructured for better maintainability. See [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for details.
+
 # 🎮 Retain AI
 
 **AI-powered copilot for live game operations**
@@ -37,28 +39,32 @@ Retain AI is an **AI-first analytics platform** that:
 ## 🚀 Key Features
 
 ### 📊 Smart Telemetry Upload
-- Drag-and-drop CSV/JSON file upload
-- Automatic schema detection
+- Drag-and-drop CSV file upload with validation
+- Automatic delimiter detection (comma, tab, pipe, semicolon)
 - Real-time parsing with progress tracking
-- Support for custom delimiters and formats
+- Support for UTF-8 BOM and various encodings
+- Handles up to 10MB files with 100k+ rows
 
-### 🤖 AI-Powered Analysis
-- **IBM Granite integration** for natural language insights
-- Automated cohort segmentation
-- Churn prediction models
-- Revenue optimization recommendations
+### 🤖 AI-Powered Analytics Engine
+- **Comprehensive Metrics**: 15+ gameplay metrics computed automatically
+- **Behavioral Patterns**: Identifies Combat-Focused, Explorer, Collector segments
+- **Anomaly Detection**: Automatic detection of unusual patterns and issues
+- **Friction Analysis**: Computes 0-100 friction score with weighted factors
+- **Mock AI Insights**: Structured recommendations (ready for IBM Granite integration)
 
-### 📈 Interactive Dashboards
-- Real-time KPI tracking
-- Player retention funnels
-- Monetization analytics
-- LiveOps event performance
+### 📈 Interactive Insights Dashboard
+- **6 Insight Categories**: Risks, Friction, Monetization, LiveOps, Players, Overview
+- **Visual Analytics**: 5+ interactive charts using Recharts
+- **Severity Badges**: High/Medium/Low priority indicators
+- **Actionable Recommendations**: Specific steps for each insight
+- **Player Segmentation**: Detailed behavioral analysis by segment
 
-### 🎨 Modern UX
+### 🎨 Production-Ready UI
 - Dark mode optimized for long sessions
-- Responsive design for all devices
-- Fast, server-side rendered pages
-- Accessible UI components
+- Fully responsive design for all devices
+- Clean, modular component architecture
+- Accessible shadcn/ui components
+- Professional insight cards with categorization
 
 ---
 
@@ -68,8 +74,9 @@ Retain AI is an **AI-first analytics platform** that:
 |----------|-----------|
 | **Frontend** | Next.js 15, React 19, TypeScript |
 | **Styling** | Tailwind CSS v4, shadcn/ui |
-| **AI/ML** | IBM Granite, Watsonx.ai |
-| **Data Processing** | CSV Parser, JSON validation |
+| **AI/ML** | IBM Granite (ready), Mock AI Layer |
+| **Data Processing** | PapaParse, Custom Analytics Engine |
+| **Visualization** | Recharts, Interactive Charts |
 | **Deployment** | Vercel, Edge Functions |
 
 ---
@@ -95,6 +102,21 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the dashboard.
+
+### Using the Analytics Engine
+
+1. Navigate to `/upload` page
+2. Upload a CSV file with gameplay telemetry
+3. Click "Generate AI Insights" button
+4. Explore insights across 6 categories:
+   - **Overview**: Charts and visual analytics
+   - **Risks**: Retention risks and churn indicators
+   - **Friction**: UX issues and pain points
+   - **Revenue**: Monetization opportunities
+   - **LiveOps**: Event and content recommendations
+   - **Players**: Behavioral segment analysis
+
+For detailed documentation, see [ANALYTICS_ENGINE.md](docs/ANALYTICS_ENGINE.md)
 
 ---
 
@@ -170,13 +192,13 @@ Compare feature variants and get AI insights on which performs better.
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details.
 
 ---
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](docs/LICENSE.md) for details.
 
 ---
 
@@ -193,5 +215,20 @@ Built with:
 ## 📧 Contact
 
 Questions? Reach out at [magithar8@gmail.com](mailto:magithar8@gmail.com)
+
+---
+
+## 📁 Project Structure
+
+For a detailed overview of the project structure and organization, see [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
+
+Key directories:
+- `/app` - Next.js pages and layouts
+- `/components` - React components
+- `/lib` - Core business logic and utilities
+- `/lib/ai` - New modular AI system (production-ready)
+- `/lib/legacy` - Legacy AI implementation (reference)
+- `/types` - Shared TypeScript types
+- `/docs` - Project documentation
 
 **Built for IBM Bob Hackathon 2026**

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Papa from "papaparse";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Upload, FileText, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
+import { Upload, FileText, CheckCircle2, AlertCircle, XCircle, Sparkles } from "lucide-react";
+import { generateAnalyticsSummary, AnalyticsSummary, TelemetryRow } from "@/lib/analytics";
+import { generateMockInsights, AIInsights } from "@/lib/legacy/mockAI";
+import { InsightsDashboard } from "@/components/insights/InsightsDashboard";
 
 interface ParsedData {
   headers: string[];
@@ -31,6 +34,12 @@ export default function UploadPage() {
   const [parseProgress, setParseProgress] = useState(0);
   const [parsedData, setParsedData] = useState<ParsedData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  
+  // Analytics state
+  const [analyticsSummary, setAnalyticsSummary] = useState<AnalyticsSummary | null>(null);
+  const [aiInsights, setAIInsights] = useState<AIInsights | null>(null);
+  const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
 
   const validateFile = (file: File): boolean => {
     // Check file type
@@ -53,25 +62,14 @@ export default function UploadPage() {
 
   /**
    * Enhanced CSV parser with robust support for Kaggle telemetry datasets
-   *
-   * Features:
-   * - FileReader-based parsing for reliable file reading
-   * - Automatic delimiter detection (comma, tab, pipe, semicolon)
-   * - UTF-8 BOM trimming for proper encoding
-   * - Explicit newline handling
-   * - Worker thread support for large files
-   * - Skips empty lines and lines with only whitespace
-   * - Fallback header generation if headers are missing
-   * - Dynamic typing for numeric values
-   * - Handles quoted fields and escape characters
-   * - Progress tracking for large files
-   *
-   * Best practices from PapaParse documentation applied for real-world CSV handling
    */
   const parseCSV = useCallback((file: File) => {
     setParseStatus("parsing");
     setParseProgress(0);
     setErrorMessage("");
+    setShowInsights(false);
+    setAIInsights(null);
+    setAnalyticsSummary(null);
 
     // Use FileReader to read the file as text first
     const reader = new FileReader();
@@ -85,91 +83,31 @@ export default function UploadPage() {
         return;
       }
 
-      // Trim UTF-8 BOM if present (0xEF, 0xBB, 0xBF)
+      // Trim UTF-8 BOM if present
       const trimmedText = text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
       
-      console.log("=== RAW TEXT DIAGNOSTICS ===");
-      console.log("File size:", file.size, "bytes");
-      console.log("Text length:", trimmedText.length, "characters");
-      console.log("First 500 characters:", trimmedText.substring(0, 500));
-      
-      // Diagnostic: Split into lines and analyze structure
-      const lines = trimmedText.split(/\r?\n/);
-      console.log("Total lines detected:", lines.length);
-      console.log("\n=== FIRST 10 LINES ANALYSIS ===");
-      
-      lines.slice(0, 10).forEach((line, idx) => {
-        const commaCount = (line.match(/,/g) || []).length;
-        const quoteCount = (line.match(/"/g) || []).length;
-        const hasUnmatchedQuotes = quoteCount % 2 !== 0;
-        const hasJSON = line.includes('{') || line.includes('[');
-        
-        console.log(`Line ${idx + 1}:`);
-        console.log(`  Length: ${line.length} chars`);
-        console.log(`  Commas: ${commaCount}`);
-        console.log(`  Quotes: ${quoteCount} ${hasUnmatchedQuotes ? '(UNMATCHED!)' : '(matched)'}`);
-        console.log(`  Has JSON: ${hasJSON}`);
-        console.log(`  Content: ${line.substring(0, 150)}${line.length > 150 ? '...' : ''}`);
-      });
-      
-      // Fallback diagnostic parser
-      console.log("\n=== FALLBACK SPLIT PARSER TEST ===");
-      if (lines.length > 1) {
-        const headerLine = lines[0];
-        const firstDataLine = lines[1];
-        console.log("Header (split by comma):", headerLine.split(',').map(h => h.trim()));
-        console.log("First data row (split by comma):", firstDataLine.split(',').map(c => c.trim()));
-      }
-      console.log("================================\n");
-
       let rowsParsed = 0;
-      const estimatedRows = Math.ceil(file.size / 100); // Rough estimate
-      
-      // Accumulate rows manually when using step callback
+      const estimatedRows = Math.ceil(file.size / 100);
       const parsedRows: Record<string, any>[] = [];
 
       // Parse the text content with PapaParse
       Papa.parse<any>(trimmedText, {
-        // Automatic delimiter detection - PapaParse will auto-detect comma, tab, pipe, semicolon
-        delimiter: "", // Empty string enables auto-detection
-        
-        // Let PapaParse auto-detect line endings (handles \n, \r\n, \r)
-        // Do not set newline explicitly - it interferes with auto-detection
-        
-        // Enable header parsing to get object-mapped rows
+        delimiter: "",
         header: true,
-        
-        // Skip empty lines for cleaner data
         skipEmptyLines: true,
-        
-        // Disable worker thread - incompatible with text parsing from FileReader
-        // Worker mode only works when passing File objects directly to Papa.parse
         worker: false,
-        
-        // Disable fast mode to ensure proper parsing
         fastMode: false,
-        
-        // Enable dynamic typing for automatic type conversion
         dynamicTyping: true,
-        
-        // Handle quoted fields properly - use backslash for escape
         quoteChar: '"',
         escapeChar: '\\',
-        
-        // Don't treat # as comments by default (common in data files)
         comments: false,
-        
-        // Specify delimiters to try for auto-detection (comma, tab, pipe, semicolon)
         delimitersToGuess: [',', '\t', '|', ';'],
         
         step: (row) => {
-          // Accumulate rows manually since step callback prevents automatic accumulation
-          // With header: true, row.data is an object with keys from headers
           if (row.data && Object.keys(row.data).length > 0) {
             parsedRows.push(row.data);
           }
           
-          // Update progress based on parsed rows
           rowsParsed++;
           const progress = Math.min(
             Math.round((rowsParsed / estimatedRows) * 100),
@@ -179,63 +117,22 @@ export default function UploadPage() {
         },
         
         complete: (results) => {
-          // Debug logging - log the full callback payload first
-          console.log("\n=== PapaParse Complete Callback ===");
-          console.log("Full results object:", results);
-          console.log("Type of results:", typeof results);
-          console.log("Manually accumulated rows:", parsedRows.length);
-          
-          // Null safety check - ensure results exists
           if (!results) {
-            console.error("Results is undefined or null");
             setErrorMessage("Parse error: No results returned from parser.");
             setParseStatus("error");
             return;
           }
           
-          // Enhanced logging for troubleshooting
-          console.log("\n=== PapaParse Results Debug ===");
-          console.log("results.meta:", results.meta);
-          console.log("Detected delimiter:", results.meta?.delimiter);
-          console.log("Detected linebreak:", results.meta?.linebreak);
-          console.log("Detected fields/headers:", results.meta?.fields);
-          console.log("Aborted:", results.meta?.aborted);
-          console.log("Truncated:", results.meta?.truncated);
-          console.log("Cursor position:", results.meta?.cursor);
-          console.log("parsedRows exists:", !!parsedRows);
-          console.log("parsedRows type:", typeof parsedRows);
-          console.log("parsedRows length:", parsedRows.length);
-          console.log("parsedRows is Array:", Array.isArray(parsedRows));
-          
-          // Log first parsed row (now an object)
-          if (parsedRows && parsedRows.length > 0) {
-            console.log("\n=== FIRST PARSED ROW (OBJECT) ===");
-            console.log("First row type:", typeof parsedRows[0]);
-            console.log("First row is Object:", typeof parsedRows[0] === 'object');
-            console.log("First row keys:", Object.keys(parsedRows[0]));
-            console.log("First row content:", parsedRows[0]);
-          }
-          
-          console.log("\nFirst 5 rows:", parsedRows.slice(0, 5));
-          console.log("Total rows parsed:", parsedRows.length);
-          console.log("Parse errors count:", results.errors?.length);
-          console.log("Parse errors:", results.errors);
-          console.log("================================\n");
-          
-          // Don't reject on errors - just log them and continue
           if (results.errors && results.errors.length > 0) {
             console.warn("Parse errors detected (continuing anyway):", results.errors);
           }
 
-          // Validate using parsedRows.length - if at least one row exists, it's valid
           if (!parsedRows || parsedRows.length === 0) {
             setErrorMessage("CSV file appears to be empty or contains no valid data.");
             setParseStatus("error");
             return;
           }
 
-          // Extract headers from results.meta.fields (set by PapaParse when header: true)
-          // Fallback to Object.keys of first row if meta.fields is unavailable
           const headers =
             results.meta?.fields ||
             (parsedRows.length > 0 ? Object.keys(parsedRows[0]) : []);
@@ -245,32 +142,18 @@ export default function UploadPage() {
             setParseStatus("error");
             return;
           }
-
-          console.log("Extracted headers from meta.fields:", headers);
-          console.log("Data rows count:", parsedRows.length);
           
-          // Minimal filtering: only remove rows that are COMPLETELY empty
-          // A row is valid if it has at least ONE non-null, non-undefined, non-empty-string value
           const filteredRows = parsedRows.filter((row) => {
-            // Check if row has at least one meaningful value
             const hasData = Object.values(row).some((value) => {
-              // Keep: booleans (including false), numbers (including 0), non-empty strings
-              // Remove: null, undefined, empty strings
               if (value === null || value === undefined) return false;
               if (value === "") return false;
-              return true; // Keep everything else (booleans, numbers, strings)
+              return true;
             });
             return hasData;
           });
 
-          console.log("Filtered rows count:", filteredRows.length);
-          console.log("Sample filtered rows (first 3):", filteredRows.slice(0, 3));
-
-          // Use the original data if filtering removed everything
           const finalRows = filteredRows.length > 0 ? filteredRows : parsedRows;
           
-          console.log("Final rows to display:", finalRows.length);
-
           setParsedData({
             headers,
             rows: finalRows,
@@ -292,7 +175,6 @@ export default function UploadPage() {
       setParseStatus("error");
     };
 
-    // Read the file as UTF-8 text
     reader.readAsText(file, "UTF-8");
   }, []);
 
@@ -337,14 +219,52 @@ export default function UploadPage() {
     setParseStatus("idle");
     setParseProgress(0);
     setErrorMessage("");
+    setShowInsights(false);
+    setAIInsights(null);
+    setAnalyticsSummary(null);
+  };
+
+  // Generate analytics and insights when data is parsed
+  const handleGenerateInsights = async () => {
+    if (!parsedData || !parsedData.rows) return;
+    
+    setIsGeneratingInsights(true);
+    
+    try {
+      // Generate analytics summary
+      const summary = generateAnalyticsSummary(parsedData.rows as TelemetryRow[]);
+      setAnalyticsSummary(summary);
+      
+      // Generate AI insights (mock)
+      const insights = await generateMockInsights(summary);
+      setAIInsights(insights);
+      setShowInsights(true);
+    } catch (error) {
+      console.error("Error generating insights:", error);
+      setErrorMessage("Failed to generate insights. Please try again.");
+    } finally {
+      setIsGeneratingInsights(false);
+    }
   };
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Gameplay Telemetry Upload</h1>
-        <p className="text-muted-foreground">
-          Upload CSV files containing gameplay telemetry data for analysis
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/20">
+            <Sparkles className="h-7 w-7 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+              Retain AI
+            </h1>
+            <p className="text-sm font-medium text-primary mt-0.5">
+              AI-Powered LiveOps & Retention Intelligence
+            </p>
+          </div>
+        </div>
+        <p className="text-muted-foreground text-base ml-[60px]">
+          Upload gameplay telemetry data to generate actionable insights for player retention and monetization
         </p>
       </div>
 
@@ -470,7 +390,7 @@ export default function UploadPage() {
             <CardTitle>Data Summary</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="p-4 border rounded-lg">
                 <p className="text-sm text-muted-foreground mb-1">Total Rows</p>
                 <p className="text-2xl font-bold">{parsedData.rowCount.toLocaleString()}</p>
@@ -486,8 +406,31 @@ export default function UploadPage() {
                 </p>
               </div>
             </div>
+            
+            {!showInsights && (
+              <Button 
+                onClick={handleGenerateInsights} 
+                disabled={isGeneratingInsights}
+                className="w-full"
+                size="lg"
+              >
+                <Sparkles className="mr-2 h-5 w-5" />
+                {isGeneratingInsights ? "Generating Insights..." : "Generate AI Insights"}
+              </Button>
+            )}
           </CardContent>
         </Card>
+      )}
+
+      {/* AI Insights Dashboard */}
+      {showInsights && analyticsSummary && (
+        <div className="mb-6">
+          <InsightsDashboard 
+            insights={aiInsights}
+            summary={analyticsSummary}
+            isLoading={isGeneratingInsights}
+          />
+        </div>
       )}
 
       {/* Preview Table */}
