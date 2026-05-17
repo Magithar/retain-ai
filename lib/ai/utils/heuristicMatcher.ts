@@ -96,22 +96,22 @@ function evaluateHeuristic(
  * Get metric value from analytics summary
  */
 function getMetricValue(summary: AnalyticsSummary, metric: string): number | null {
-  const metricMap: Record<string, number> = {
-    averageDeaths: summary.averageDeaths,
-    highDeathSessions: summary.highDeathSessions,
+  const metricMap: Record<string, number | null> = {
+    averageDeaths: summary.averageDeaths ?? null,
+    highDeathSessions: summary.highDeathSessions, // High death telemetry entries
     highDeathSessionsPercent: (summary.highDeathSessions / summary.totalSessions) * 100,
-    lowScoreSessions: summary.lowScoreSessions,
+    lowScoreSessions: summary.lowScoreSessions, // Low score telemetry entries
     abandonmentRate: summary.abandonmentRate,
-    killDeathRatio: summary.killDeathRatio,
-    pickupEfficiency: summary.pickupEfficiency,
-    combatTimePercentage: summary.combatTimePercentage,
-    combatIntensity: summary.combatIntensity,
-    explorationEngagement: summary.explorationEngagement,
+    killDeathRatio: summary.killDeathRatio ?? null,
+    pickupEfficiency: summary.pickupEfficiency ?? null,
+    combatTimePercentage: summary.combatTimePercentage ?? null,
+    combatIntensity: summary.combatIntensity ?? null,
+    explorationEngagement: summary.explorationEngagement ?? null,
     frictionScore: summary.frictionScore,
-    averageScore: summary.averageScore,
-    averageKills: summary.averageKills,
-    averageDistanceTraveled: summary.averageDistanceTraveled,
-    zeroScoreSessions: summary.anomalies.find(a => a.type === 'Zero Score Sessions')?.affectedSessions || 0,
+    averageScore: summary.averageScore ?? null,
+    averageKills: summary.averageKills ?? null,
+    averageDistanceTraveled: summary.averageDistanceTraveled ?? null,
+    zeroScoreSessions: summary.anomalies.find(a => a.type === 'Zero Score Sessions')?.affectedSessions || 0, // Zero score telemetry entries
     zeroScoreSessionsPercent: ((summary.anomalies.find(a => a.type === 'Zero Score Sessions')?.affectedSessions || 0) / summary.totalSessions) * 100
   };
   

@@ -55,4 +55,111 @@ Hover tooltips, chart zoom on click, row highlighting on hover, smooth filter an
 - [ ] Light mode: text contrast 4.5:1 minimum
 - [ ] Focus states visible for keyboard nav
 - [ ] prefers-reduced-motion respected
+
+---
+
+## Current Implementation (v1.1.0)
+
+### UI Component Library
+
+**shadcn/ui Components** (Radix UI based):
+- ✅ **Alert** - User notifications and warnings
+- ✅ **Alert Dialog** - Confirmation dialogs with actions
+- ✅ **Badge** - Status indicators (High/Medium/Low severity)
+- ✅ **Button** - Primary, secondary, outline, ghost variants
+- ✅ **Card** - Content containers with header/footer
+- ✅ **Progress** - Loading and progress indicators
+- ✅ **Table** - Data tables with sorting
+- ✅ **Tabs** - Tabbed navigation for insights dashboard
+
+**Custom Components**:
+- ✅ **Nav** - Navigation bar with theme toggle
+- ✅ **ThemeProvider** - next-themes integration
+- ✅ **ThemeToggle** - Dark/light mode switcher
+- ✅ **InsightCard** - Individual insight display
+- ✅ **InsightsDashboard** - Main analytics dashboard
+- ✅ **AnalyticsCharts** - Recharts visualizations
+- ✅ **DatasetCapabilityPanel** - Telemetry capability display
+- ✅ **LiveOpsEventCard** - Event recommendation cards
+- ✅ **LiveOpsRecommendations** - LiveOps panel
+
+### Icon Library
+**Lucide React** - Consistent, accessible SVG icons throughout the application
+
+### Animation Library
+**Framer Motion** - Smooth transitions and animations for enhanced UX
+
+### Current Theme Implementation
+
+**Dark Mode (Primary)**:
+- Background: `hsl(222.2 84% 4.9%)` - Deep blue-black
+- Foreground: `hsl(210 40% 98%)` - Near white
+- Card: `hsl(222.2 84% 4.9%)` - Matches background
+- Primary: `hsl(210 40% 98%)` - Light text
+- Accent: `hsl(217.2 91.2% 59.8%)` - Bright blue
+
+**Light Mode (Secondary)**:
+- Background: `hsl(0 0% 100%)` - Pure white
+- Foreground: `hsl(222.2 84% 4.9%)` - Dark text
+- Card: `hsl(0 0% 100%)` - White cards
+- Primary: `hsl(222.2 47.4% 11.2%)` - Dark blue
+- Accent: `hsl(217.2 91.2% 59.8%)` - Bright blue
+
+### Typography Stack
+- **System Font Stack**: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
+- **Monospace**: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace
+
+### Responsive Breakpoints
+- **Mobile**: 375px - 640px
+- **Tablet**: 640px - 1024px
+- **Desktop**: 1024px - 1440px
+- **Wide**: 1440px+
+
+### Accessibility Features
+- ✅ WCAG AA compliant color contrast
+- ✅ Keyboard navigation support
+- ✅ Focus states on all interactive elements
+- ✅ Screen reader friendly labels
+- ✅ Reduced motion support via `prefers-reduced-motion`
+- ✅ Semantic HTML structure
+
+### Performance Optimizations
+- ✅ Next.js 16 with React 19
+- ✅ Tailwind CSS v4 for minimal CSS bundle
+- ✅ Code splitting and lazy loading
+- ✅ Optimized images and assets
+- ✅ Edge-ready deployment
+
+### Design Patterns Used
+1. **Dashboard Pattern** - Data-dense, scannable layout
+2. **Card-Based Layout** - Modular, reusable content blocks
+3. **Tab Navigation** - Organized insight categories
+4. **Progressive Disclosure** - Show details on demand
+5. **Status Indicators** - Clear visual hierarchy with badges
+6. **Loading States** - Smooth transitions and feedback
+7. **Empty States** - Helpful guidance when no data
+
+### Component Status
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Alert | ✅ Complete | Radix UI based |
+| Alert Dialog | ✅ Complete | Confirmation dialogs |
+| Badge | ✅ Complete | Severity indicators |
+| Button | ✅ Complete | Multiple variants |
+| Card | ✅ Complete | Content containers |
+| Progress | ✅ Complete | Loading indicators |
+| Table | ✅ Complete | Data display |
+| Tabs | ✅ Complete | Navigation |
+| Nav | ✅ Complete | App navigation |
+| Theme Toggle | ✅ Complete | Dark/light mode |
+| Insights Dashboard | ✅ Complete | Main analytics view |
+| Analytics Charts | ✅ Complete | Recharts integration |
+| Capability Panel | ✅ Complete | Dataset quality |
+| LiveOps Cards | ✅ Complete | Event recommendations |
+
+---
+
+**Last Updated:** 2026-05-17  
+**Design System Version:** 1.1.0
 - [ ] Responsive: 375px, 768px, 1024px, 1440px

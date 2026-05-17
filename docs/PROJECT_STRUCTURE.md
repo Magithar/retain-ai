@@ -8,24 +8,28 @@ Retain AI is organized into a clean, modular structure that separates concerns a
 
 ```
 retain-ai/
-├── app/                      # Next.js app directory (pages & layouts)
+├── app/                      # Next.js 16 app directory (pages & layouts)
 │   ├── favicon.ico
-│   ├── globals.css          # Global styles & theme
-│   ├── layout.tsx           # Root layout
-│   ├── page.tsx             # Home page
+│   ├── globals.css          # Global styles, theme variables, Tailwind config
+│   ├── layout.tsx           # Root layout with theme provider
+│   ├── page.tsx             # Landing page with dashboard overview
 │   └── upload/              # Upload & analytics page
-│       └── page.tsx
+│       └── page.tsx         # CSV upload and insights generation
 │
 ├── components/              # React components
-│   ├── nav.tsx             # Navigation component
-│   ├── theme-provider.tsx  # Theme context provider
-│   ├── theme-toggle.tsx    # Dark/light mode toggle
+│   ├── nav.tsx             # Navigation component with theme toggle
+│   ├── theme-provider.tsx  # next-themes context provider
+│   ├── theme-toggle.tsx    # Dark/light mode toggle button
 │   ├── insights/           # Analytics insights components
-│   │   ├── AnalyticsCharts.tsx
-│   │   ├── InsightCard.tsx
-│   │   └── InsightsDashboard.tsx
-│   └── ui/                 # shadcn/ui components
+│   │   ├── AnalyticsCharts.tsx        # Recharts visualizations
+│   │   ├── DatasetCapabilityPanel.tsx # Telemetry capability display
+│   │   ├── InsightCard.tsx            # Individual insight card
+│   │   ├── InsightsDashboard.tsx      # Main insights dashboard
+│   │   ├── LiveOpsEventCard.tsx       # LiveOps event recommendation card
+│   │   └── LiveOpsRecommendations.tsx # LiveOps recommendations panel
+│   └── ui/                 # shadcn/ui components (Radix UI based)
 │       ├── alert.tsx
+│       ├── badge.tsx
 │       ├── button.tsx
 │       ├── card.tsx
 │       ├── progress.tsx
@@ -33,44 +37,71 @@ retain-ai/
 │       └── tabs.tsx
 │
 ├── lib/                    # Core library code
-│   ├── analytics.ts        # Analytics engine (main)
+│   ├── achievement-analytics.ts  # Achievement system analytics
+│   ├── analytics.ts        # Main analytics engine with capability detection
 │   ├── formatters.ts       # Data formatting utilities
 │   ├── theme.ts           # Theme utilities
-│   ├── utils.ts           # General utilities
-│   ├── ai/                # New AI system (IBM Granite ready)
+│   ├── utils.ts           # General utilities (cn, etc.)
+│   ├── ai/                # Modular AI system (IBM Granite ready)
 │   │   ├── index.ts       # Main AI exports
-│   │   ├── orchestrator.ts # AI orchestration
+│   │   ├── orchestrator.ts # AI prompt orchestration
 │   │   ├── types.ts       # AI type definitions
 │   │   ├── README.md      # AI system documentation
-│   │   ├── builders/      # Insight builders
+│   │   ├── builders/      # Insight builders (prompt generation)
 │   │   │   ├── frictionBuilder.ts
 │   │   │   ├── liveOpsBuilder.ts
 │   │   │   ├── monetizationBuilder.ts
 │   │   │   ├── retentionBuilder.ts
 │   │   │   └── segmentationBuilder.ts
-│   │   ├── intelligence/  # PM heuristics
+│   │   ├── generators/    # Insight generators (heuristic-based)
+│   │   │   ├── achievementInsightGenerator.ts
+│   │   │   └── liveOpsGenerator.ts
+│   │   ├── intelligence/  # PM heuristics and rules
+│   │   │   ├── achievementHeuristics.ts
 │   │   │   └── pmHeuristics.ts
 │   │   ├── utils/         # AI utilities
 │   │   │   ├── heuristicMatcher.ts
 │   │   │   └── promptComposer.ts
 │   │   └── examples/      # Usage examples
+│   │       ├── achievement-usage-example.ts
 │   │       └── usage-example.ts
-│   └── legacy/            # Legacy AI implementation
+│   ├── telemetry/         # Telemetry capability detection
+│   │   └── datasetAnalyzer.ts  # Automatic telemetry detection
+│   └── legacy/            # Legacy AI implementation (reference)
 │       ├── aiSummary.ts   # Executive summary generator
 │       ├── mockAI.ts      # Mock AI responses
-│       └── promptBuilder.ts # Prompt generation
+│       └── promptBuilder.ts # Legacy prompt generation
 │
 ├── types/                 # Shared TypeScript types
-│   ├── analytics.ts       # Analytics type definitions
-│   └── ai.ts             # AI type definitions
+│   ├── achievement-analytics.ts  # Achievement system types
+│   ├── ai.ts                    # AI insights and recommendation types
+│   ├── analytics.ts             # Analytics and telemetry types
+│   └── telemetry-capabilities.ts # Telemetry capability types
 │
-├── docs/                  # Documentation
-│   ├── ANALYTICS_ENGINE.md # Analytics documentation
-│   ├── design-system.md   # Design system guide
-│   ├── UI_IMPROVEMENTS.md # UI/UX improvements log
-│   └── PROJECT_STRUCTURE.md # This file
+├── docs/                  # Comprehensive documentation
+│   ├── README.md                           # Documentation index
+│   ├── ACHIEVEMENT_ANALYTICS_GUIDE.md      # Achievement system guide
+│   ├── ANALYTICS_ENGINE.md                 # Analytics engine docs
+│   ├── CHANGELOG.md                        # Version history
+│   ├── CONTRIBUTING.md                     # Contribution guidelines
+│   ├── CORRECT_ARCHITECTURE.md             # System architecture
+│   ├── design-system.md                    # UI/UX design guidelines
+│   ├── IMPLEMENTATION_GUIDE.md             # Development guide
+│   ├── IMPLEMENTATION_STATUS.md            # Current progress
+│   ├── LICENSE.md                          # MIT License
+│   ├── LIVEOPS_RECOMMENDATIONS.md          # LiveOps features
+│   ├── PROJECT_STRUCTURE.md                # This file
+│   ├── TELEMETRY_ARCHITECTURE_DIAGRAM.md   # Telemetry system design
+│   ├── TELEMETRY_CAPABILITY_REFACTOR_PLAN.md # Capability detection plan
+│   ├── UI_IMPROVEMENTS.md                  # UI enhancement log
+│   └── granite/                            # IBM Granite integration docs
+│       ├── README.md                       # Granite overview
+│       ├── AI_PROVIDER_GUIDE.md            # Provider architecture
+│       ├── GRANITE_IMPLEMENTATION_ROADMAP.md # Implementation plan
+│       ├── GRANITE_QUICKSTART.md           # Quick start guide
+│       └── IBM_GRANITE_INTEGRATION.md      # Complete integration guide
 │
-├── config/               # Configuration files (archived)
+├── config/               # Configuration files (archived, for reference)
 │   ├── components.json   # shadcn/ui config
 │   ├── eslint.config.mjs # ESLint config
 │   ├── next.config.ts    # Next.js config
@@ -83,13 +114,12 @@ retain-ai/
 │   ├── vercel.svg
 │   └── window.svg
 │
-├── hooks/               # Custom React hooks (empty, ready for use)
-│
 ├── .gitignore          # Git ignore rules
 ├── components.json     # shadcn/ui configuration
 ├── eslint.config.mjs   # ESLint configuration
 ├── next.config.ts      # Next.js configuration
 ├── package.json        # Dependencies & scripts
+├── package-lock.json   # Locked dependencies
 ├── postcss.config.mjs  # PostCSS configuration
 ├── README.md           # Project README
 └── tsconfig.json       # TypeScript configuration
@@ -114,9 +144,11 @@ retain-ai/
 ### `/lib` - Core Logic
 - **Purpose**: Business logic, utilities, and AI systems
 - **Key Modules**:
-  - `analytics.ts`: Main analytics engine
-  - `/ai`: New modular AI system (production-ready)
-  - `/legacy`: Old AI implementation (for reference)
+  - `analytics.ts`: Main analytics engine with capability detection
+  - `achievement-analytics.ts`: Achievement system analytics
+  - `/ai`: Modular AI system (IBM Granite ready, production-ready)
+  - `/telemetry`: Dataset analyzer and capability detection
+  - `/legacy`: Legacy AI implementation (for reference)
 
 ### `/types` - Type Definitions
 - **Purpose**: Shared TypeScript interfaces and types
@@ -136,14 +168,24 @@ retain-ai/
 
 ### Legacy System (`/lib/legacy`)
 - Simple mock-based AI responses
-- Used in current production
+- Used for backward compatibility
 - Files: `mockAI.ts`, `promptBuilder.ts`, `aiSummary.ts`
 
-### New System (`/lib/ai`)
-- Modular, production-ready architecture
-- IBM Granite integration ready
-- Heuristic-based insights
-- Structured builders for each insight category
+### Current System (`/lib/ai`)
+- **Modular, production-ready architecture**
+- **IBM Granite integration ready** (watsonx.ai, HuggingFace, Ollama)
+- **Heuristic-based intelligence** - generates insights without LLM calls
+- **Structured builders** for each insight category (retention, monetization, liveops, friction, segmentation)
+- **AI Orchestrator** - coordinates multiple prompt builders
+- **Generators** - heuristic-based insight generation (achievements, liveops)
+- **Intelligence Layer** - PM-grade heuristics and rules
+
+### Telemetry System (`/lib/telemetry`)
+- **Dataset Analyzer** - automatic telemetry capability detection
+- **8 Telemetry Categories** - combat, pickup, movement, session, monetization, achievement, progression, liveops
+- **Smart Field Mapping** - recognizes alternative column names
+- **Confidence Scoring** - per-category confidence levels
+- **Quality Assessment** - dataset completeness evaluation
 
 ## Import Paths
 
@@ -207,6 +249,19 @@ All configuration files are in the root directory for Next.js compatibility:
 - Configuration files restored to root (Next.js requirement)
 - Shared types extracted to `/types`
 
+## Recent Updates
+
+### May 2026
+- ✅ Added telemetry capability detection system
+- ✅ Implemented achievement analytics system
+- ✅ Created LiveOps recommendation engine
+- ✅ Added DatasetCapabilityPanel component
+- ✅ Integrated Framer Motion for animations
+- ✅ Updated to Next.js 16 and React 19
+- ✅ Added comprehensive documentation structure
+- ✅ Implemented heuristic-based intelligence layer
+
 ---
 
-**Last Updated**: 2026-05-16
+**Last Updated**: 2026-05-17
+**Version**: 1.1.0

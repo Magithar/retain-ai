@@ -263,11 +263,11 @@ export function validateAnalyticsSummary(summary: AnalyticsSummary): {
     errors.push('Total sessions must be greater than 0');
   }
   
-  if (summary.averageScore < 0) {
+  if (summary.averageScore !== null && summary.averageScore < 0) {
     errors.push('Average score cannot be negative');
   }
   
-  if (summary.killDeathRatio < 0) {
+  if (summary.killDeathRatio !== null && summary.killDeathRatio < 0) {
     errors.push('K/D ratio cannot be negative');
   }
   

@@ -5,6 +5,7 @@
  */
 
 import { AnalyticsSummary } from '../../analytics';
+import { TelemetryCapabilities } from '../../../types/telemetry-capabilities';
 import {
   generatePrompt,
   generateAllPrompts,
@@ -13,6 +14,18 @@ import {
   matchHeuristics,
   validateAnalyticsSummary
 } from '../index';
+
+// Example capabilities (full telemetry available)
+const exampleCapabilities: TelemetryCapabilities = {
+  combat: { available: true, detectedFields: ['kills', 'deaths', 'damageDone'], missingFields: [] },
+  pickup: { available: true, detectedFields: ['itemsCollected', 'pickupAttempts'], missingFields: [] },
+  movement: { available: true, detectedFields: ['distanceTraveled'], missingFields: [] },
+  session: { available: true, detectedFields: ['sessionId', 'timestamp', 'score'], missingFields: [] },
+  monetization: { available: false, detectedFields: [], missingFields: ['revenue', 'purchases'] },
+  achievement: { available: false, detectedFields: [], missingFields: ['achievementId'] },
+  progression: { available: false, detectedFields: [], missingFields: ['level'] },
+  liveops: { available: false, detectedFields: [], missingFields: ['eventId'] }
+};
 
 // Example analytics data
 const exampleSummary: AnalyticsSummary = {
@@ -66,10 +79,19 @@ const exampleSummary: AnalyticsSummary = {
       affectedSessions: 45
     }
   ],
-  scoreDistribution: [120, 280, 450, 380, 200, 70],
-  killsDistribution: [180, 320, 480, 350, 140, 30],
-  deathsDistribution: [250, 420, 380, 280, 130, 40],
-  combatTimeDistribution: [90, 210, 380, 450, 280, 90]
+  capabilities: exampleCapabilities,
+  capabilitySummary: {
+    available: ['combat', 'pickup', 'movement', 'session'],
+    unavailable: ['monetization', 'achievement', 'progression', 'liveops'],
+    quality: 'good',
+    supportedAnalytics: ['combat analytics', 'pickup analytics', 'movement analytics', 'session analytics'],
+    unsupportedAnalytics: ['monetization analytics', 'achievement analytics', 'progression analytics', 'liveops analytics'],
+    recommendations: [
+      'Add monetization tracking for business insights',
+      'Include achievement data for engagement analysis'
+    ],
+    detectedFieldCount: 9
+  }
 };
 
 /**

@@ -4,11 +4,12 @@
 
 **AI-powered copilot for live game operations**
 
-Transform gameplay telemetry into actionable retention, monetization, and LiveOps insights using IBM Granite + AI workflows.
+Transform gameplay telemetry into actionable retention, monetization, and LiveOps insights using intelligent analytics and IBM Granite-ready AI workflows.
 
-[![Built with Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![Built with Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
-[![IBM Granite](https://img.shields.io/badge/IBM-Granite-0f62fe?style=flat&logo=ibm)](https://www.ibm.com/granite)
+[![IBM Granite](https://img.shields.io/badge/IBM-Granite_Ready-0f62fe?style=flat&logo=ibm)](https://www.ibm.com/granite)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
 
 ---
 
@@ -38,33 +39,35 @@ Retain AI is an **AI-first analytics platform** that:
 
 ## 🚀 Key Features
 
-### 📊 Smart Telemetry Upload
-- Drag-and-drop CSV file upload with validation
-- Automatic delimiter detection (comma, tab, pipe, semicolon)
-- Real-time parsing with progress tracking
-- Support for UTF-8 BOM and various encodings
-- Handles up to 10MB files with 100k+ rows
+### 📊 Intelligent Telemetry Analysis
+- **Smart Dataset Detection**: Automatically identifies 8 telemetry categories (combat, pickup, movement, session, monetization, achievement, progression, liveops)
+- **Capability-Aware Analytics**: Only computes metrics when relevant data is available
+- **Drag-and-Drop Upload**: CSV file upload with automatic delimiter detection
+- **Real-time Parsing**: Progress tracking with support for 100k+ rows
+- **Data Quality Assessment**: Transparent reporting of dataset completeness
 
 ### 🤖 AI-Powered Analytics Engine
-- **Comprehensive Metrics**: 15+ gameplay metrics computed automatically
-- **Behavioral Patterns**: Identifies Combat-Focused, Explorer, Collector segments
+- **Comprehensive Metrics**: 20+ gameplay metrics computed conditionally
+- **Behavioral Segmentation**: Identifies Combat-Focused, Explorer, Collector, and Casual player types
 - **Anomaly Detection**: Automatic detection of unusual patterns and issues
-- **Friction Analysis**: Computes 0-100 friction score with weighted factors
-- **Mock AI Insights**: Structured recommendations (ready for IBM Granite integration)
+- **Friction Analysis**: 0-100 friction score with weighted factors
+- **Heuristic Intelligence**: PM-grade insights without requiring LLM calls
+- **IBM Granite Ready**: Modular AI orchestrator prepared for LLM integration
 
 ### 📈 Interactive Insights Dashboard
-- **6 Insight Categories**: Risks, Friction, Monetization, LiveOps, Players, Overview
-- **Visual Analytics**: 5+ interactive charts using Recharts
-- **Severity Badges**: High/Medium/Low priority indicators
-- **Actionable Recommendations**: Specific steps for each insight
-- **Player Segmentation**: Detailed behavioral analysis by segment
+- **6 Insight Categories**: Overview, Risks, Friction, Revenue, LiveOps, Players
+- **Visual Analytics**: 8+ interactive charts using Recharts
+- **LiveOps Recommendations**: AI-generated event suggestions with timing and targeting
+- **Severity Indicators**: High/Medium/Low priority badges
+- **Actionable Recommendations**: Specific, implementable steps for each insight
+- **Dataset Capability Panel**: Clear visibility into available analytics
 
 ### 🎨 Production-Ready UI
-- Dark mode optimized for long sessions
-- Fully responsive design for all devices
-- Clean, modular component architecture
-- Accessible shadcn/ui components
-- Professional insight cards with categorization
+- **Dark Mode First**: Optimized for long analytics sessions
+- **Fully Responsive**: Works seamlessly on desktop, tablet, and mobile
+- **shadcn/ui Components**: Accessible, customizable UI primitives
+- **Framer Motion**: Smooth animations and transitions
+- **Professional Design**: Clean, modern interface with excellent UX
 
 ---
 
@@ -72,12 +75,13 @@ Retain AI is an **AI-first analytics platform** that:
 
 | Category | Technology |
 |----------|-----------|
-| **Frontend** | Next.js 15, React 19, TypeScript |
-| **Styling** | Tailwind CSS v4, shadcn/ui |
-| **AI/ML** | IBM Granite (ready), Mock AI Layer |
-| **Data Processing** | PapaParse, Custom Analytics Engine |
+| **Frontend** | Next.js 16, React 19, TypeScript 5 |
+| **Styling** | Tailwind CSS v4, shadcn/ui, Framer Motion |
+| **AI/ML** | IBM Granite (ready), Heuristic Intelligence, Modular AI Orchestrator |
+| **Data Processing** | PapaParse, Custom Analytics Engine, Telemetry Capability Detection |
 | **Visualization** | Recharts, Interactive Charts |
-| **Deployment** | Vercel, Edge Functions |
+| **UI Components** | Radix UI, Lucide Icons |
+| **Deployment** | Vercel-ready, Edge Functions |
 
 ---
 
@@ -181,12 +185,34 @@ Compare feature variants and get AI insights on which performs better.
 
 ## 🔮 Roadmap
 
+### Phase 1: Core Enhancement (Current)
+- [x] Telemetry capability detection system
+- [x] Heuristic-based intelligence layer
+- [x] LiveOps recommendation engine
+- [x] Achievement analytics system
+- [x] Dataset quality assessment
+- [ ] Complete TypeScript error resolution
+
+### Phase 2: AI Integration
+- [ ] IBM Granite LLM integration
+- [ ] watsonx.ai provider implementation
+- [ ] HuggingFace provider support
+- [ ] Ollama local deployment option
+- [ ] Advanced prompt engineering
+
+### Phase 3: Advanced Features
 - [ ] Real-time telemetry streaming
-- [ ] Advanced ML models for churn prediction
-- [ ] Multi-game support
+- [ ] Predictive churn modeling
+- [ ] Multi-game portfolio support
 - [ ] Custom dashboard builder
+- [ ] A/B test analysis automation
+
+### Phase 4: Enterprise
 - [ ] Slack/Discord integration for alerts
-- [ ] API for programmatic access
+- [ ] REST API for programmatic access
+- [ ] Webhook support for real-time events
+- [ ] Role-based access control
+- [ ] White-label deployment options
 
 ---
 
@@ -223,12 +249,24 @@ Questions? Reach out at [magithar8@gmail.com](mailto:magithar8@gmail.com)
 For a detailed overview of the project structure and organization, see [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
 
 Key directories:
-- `/app` - Next.js pages and layouts
-- `/components` - React components
+- `/app` - Next.js 16 app directory (pages, layouts, routes)
+- `/components` - React components (UI primitives & insights)
 - `/lib` - Core business logic and utilities
-- `/lib/ai` - New modular AI system (production-ready)
-- `/lib/legacy` - Legacy AI implementation (reference)
-- `/types` - Shared TypeScript types
-- `/docs` - Project documentation
+  - `/lib/ai` - Modular AI system with orchestrator (IBM Granite ready)
+  - `/lib/telemetry` - Dataset analyzer and capability detection
+  - `/lib/legacy` - Legacy AI implementation (reference)
+- `/types` - Shared TypeScript type definitions
+- `/docs` - Comprehensive project documentation
+- `/public` - Static assets
 
-**Built for IBM Bob Hackathon 2026**
+## 📚 Documentation
+
+Complete documentation is available in the `/docs` directory:
+
+- **[Documentation Index](docs/README.md)** - Start here for navigation
+- **[Project Structure](docs/PROJECT_STRUCTURE.md)** - Codebase organization
+- **[Implementation Status](docs/IMPLEMENTATION_STATUS.md)** - Current progress
+- **[Analytics Engine](docs/ANALYTICS_ENGINE.md)** - Analytics system details
+- **[IBM Granite Integration](docs/granite/README.md)** - AI integration guides
+
+**Built for IBM Bob Hackathon 2026** 🚀

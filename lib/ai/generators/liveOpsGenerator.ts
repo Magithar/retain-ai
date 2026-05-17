@@ -17,13 +17,16 @@ export function generateLiveOpsRecommendations(
 ): LiveOpsEventRecommendation[] {
   const recommendations: LiveOpsEventRecommendation[] = [];
 
-  // Combat Event Recommendation
-  if (summary.combatTimePercentage > 50 || summary.killDeathRatio > 0.8) {
+  // Combat Event Recommendation (only if combat telemetry available)
+  if (summary.capabilities.combat.available &&
+      summary.combatTimePercentage !== null &&
+      summary.killDeathRatio !== null &&
+      (summary.combatTimePercentage > 50 || summary.killDeathRatio > 0.8)) {
     recommendations.push({
       eventName: "Arena Champions Tournament",
       eventType: "combat",
       targetSegment: "Combat-Focused Players",
-      segmentSize: `${Math.round(summary.combatTimePercentage)}% of active players (~${Math.round(summary.totalSessions * (summary.combatTimePercentage / 100))} sessions)`,
+      segmentSize: `${Math.round(summary.combatTimePercentage)}% of active players (~${Math.round(summary.totalSessions * (summary.combatTimePercentage / 100))} telemetry entries)`,
       rewardStructure: {
         primary: "Exclusive Legendary Weapon Skin",
         secondary: [
@@ -37,7 +40,7 @@ export function generateLiveOpsRecommendations(
       retentionImpact: {
         expectedD1Lift: "+12-18%",
         expectedD7Lift: "+8-12%",
-        targetMetric: "Combat session frequency and duration"
+        targetMetric: "Combat engagement frequency and duration"
       },
       recommendedCadence: "weekly",
       duration: "7 days (Friday-Thursday)",
@@ -67,12 +70,14 @@ export function generateLiveOpsRecommendations(
         "Requires robust matchmaking system",
         "Potential for exploits in leaderboard"
       ],
-      priority: summary.combatTimePercentage > 60 ? "high" : "medium"
+      priority: (summary.combatTimePercentage && summary.combatTimePercentage > 60) ? "high" : "medium"
     });
   }
 
-  // Collection Event Recommendation
-  if (summary.pickupEfficiency > 70) {
+  // Collection Event Recommendation (only if pickup telemetry available)
+  if (summary.capabilities.pickup.available &&
+      summary.pickupEfficiency !== null &&
+      summary.pickupEfficiency > 70) {
     const collectorBehavior = summary.topBehaviors?.find(b => b.pattern === 'Collector');
     const collectorPercentage = collectorBehavior?.frequency || 30;
     
@@ -94,7 +99,7 @@ export function generateLiveOpsRecommendations(
       retentionImpact: {
         expectedD1Lift: "+15-22%",
         expectedD7Lift: "+10-15%",
-        targetMetric: "Session length and exploration coverage"
+        targetMetric: "Entry length and exploration coverage"
       },
       recommendedCadence: "monthly",
       duration: "14 days",
@@ -188,7 +193,7 @@ export function generateLiveOpsRecommendations(
       eventName: "Server-Wide Siege Event",
       eventType: "social",
       targetSegment: "All Active Players (Community-Wide)",
-      segmentSize: `${summary.totalSessions.toLocaleString()} total sessions - entire player base`,
+      segmentSize: `${summary.totalSessions.toLocaleString()} total telemetry entries - entire player base`,
       rewardStructure: {
         primary: "Unlock exclusive raid boss and rewards",
         secondary: [
@@ -237,8 +242,10 @@ export function generateLiveOpsRecommendations(
     });
   }
 
-  // Challenge Event (if high death rate)
-  if (summary.averageDeaths > 4) {
+  // Challenge Event (if high death rate and combat telemetry available)
+  if (summary.capabilities.combat.available &&
+      summary.averageDeaths !== null &&
+      summary.averageDeaths > 4) {
     recommendations.push({
       eventName: "Hardcore Survival Challenge",
       eventType: "challenge",
@@ -287,7 +294,7 @@ export function generateLiveOpsRecommendations(
         "Could highlight balance issues",
         "Requires careful difficulty tuning"
       ],
-      priority: summary.averageDeaths > 6 ? "high" : "medium"
+      priority: (summary.averageDeaths && summary.averageDeaths > 6) ? "high" : "medium"
     });
   }
 

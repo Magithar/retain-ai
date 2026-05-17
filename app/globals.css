@@ -6,7 +6,7 @@
   --font-mono: 'Fira Code', 'SF Mono', 'Monaco', monospace;
   
   /* Retain AI Official Design System - Dark Mode Only */
-  --color-background: 0 0% 0%; /* #000000 - Pure Black */
+  --color-background: 230 23% 5%; /* #0A0B10 - Dark Blue-Gray */
   --color-foreground: 210 40% 98%; /* #f8fafc */
   
   --color-card: 220 39% 11%; /* #121826 */

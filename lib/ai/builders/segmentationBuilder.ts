@@ -220,7 +220,7 @@ ${schema}
     
     if (summary.topBehaviors && summary.topBehaviors.length > 0) {
       summary.topBehaviors.forEach((b: any) => {
-        behaviors.push(`${b.pattern}: ${b.frequency.toFixed(1)}% of sessions - ${b.description}`);
+        behaviors.push(`${b.pattern}: ${b.frequency.toFixed(1)}% of telemetry entries - ${b.description}`);
       });
     }
     
@@ -238,7 +238,7 @@ ${schema}
     }
     
     if (summary.averageDeaths > 4) {
-      behaviors.push(`Struggling Players: ${summary.averageDeaths.toFixed(1)} deaths/session indicates difficulty`);
+      behaviors.push(`Struggling Players: ${summary.averageDeaths.toFixed(1)} deaths/entry indicates difficulty`);
     }
     
     if (summary.averageScore > 1000) {

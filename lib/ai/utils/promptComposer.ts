@@ -16,36 +16,62 @@ export function formatAnalyticsContext(summary: AnalyticsSummary): string {
   
   sections.push('## Analytics Data Summary\n');
   
-  // Session Metrics
-  sections.push('### Session Metrics');
-  sections.push(`- Total Sessions: ${summary.totalSessions.toLocaleString()}`);
-  sections.push(`- Average Score: ${summary.averageScore.toFixed(2)}`);
-  sections.push(`- Average Session Duration: ${(summary.averageScore / 100).toFixed(1)} minutes (estimated)`);
+  // Dataset Capability Summary
+  sections.push('### Dataset Capabilities');
+  sections.push(`- Available Telemetry: ${summary.capabilitySummary.available.join(', ') || 'None'}`);
+  sections.push(`- Dataset Quality: ${summary.capabilitySummary.quality}`);
+  if (summary.capabilitySummary.unavailable.length > 0) {
+    sections.push(`- ⚠️ Unavailable: ${summary.capabilitySummary.unavailable.join(', ')}`);
+  }
+  sections.push('');
+  
+  // Telemetry Entry Metrics
+  sections.push('### Telemetry Entry Metrics');
+  sections.push(`- Total Telemetry Entries: ${summary.totalSessions.toLocaleString()}`);
+  if (summary.averageScore !== null) {
+    sections.push(`- Average Score: ${summary.averageScore.toFixed(2)}`);
+    sections.push(`- Average Entry Duration: ${(summary.averageScore / 100).toFixed(1)} minutes (estimated)`);
+  } else {
+    sections.push(`- Average Score: Telemetry unavailable`);
+  }
   sections.push('');
   
   // Combat Metrics
   sections.push('### Combat Performance');
-  sections.push(`- Average Kills: ${summary.averageKills.toFixed(2)}`);
-  sections.push(`- Average Deaths: ${summary.averageDeaths.toFixed(2)}`);
-  sections.push(`- Kill/Death Ratio: ${summary.killDeathRatio.toFixed(2)}`);
-  sections.push(`- Combat Intensity: ${summary.combatIntensity.toFixed(2)} damage/second`);
-  sections.push(`- Average Damage Done: ${summary.averageDamageDone.toFixed(2)}`);
-  sections.push(`- Average Enemies Hit: ${summary.averageEnemiesHit.toFixed(2)}`);
-  sections.push(`- Combat Time: ${summary.combatTimePercentage.toFixed(1)}% of total playtime`);
+  if (summary.capabilities.combat.available) {
+    if (summary.averageKills !== null) sections.push(`- Average Kills: ${summary.averageKills.toFixed(2)}`);
+    if (summary.averageDeaths !== null) sections.push(`- Average Deaths: ${summary.averageDeaths.toFixed(2)}`);
+    if (summary.killDeathRatio !== null) sections.push(`- Kill/Death Ratio: ${summary.killDeathRatio.toFixed(2)}`);
+    if (summary.combatIntensity !== null) sections.push(`- Combat Intensity: ${summary.combatIntensity.toFixed(2)} damage/second`);
+    if (summary.averageDamageDone !== null) sections.push(`- Average Damage Done: ${summary.averageDamageDone.toFixed(2)}`);
+    if (summary.averageEnemiesHit !== null) sections.push(`- Average Enemies Hit: ${summary.averageEnemiesHit.toFixed(2)}`);
+    if (summary.combatTimePercentage !== null) sections.push(`- Combat Time: ${summary.combatTimePercentage.toFixed(1)}% of total playtime`);
+  } else {
+    sections.push(`- ⚠️ Combat telemetry unavailable in uploaded dataset`);
+  }
   sections.push('');
   
   // Engagement Metrics
   sections.push('### Engagement Indicators');
-  sections.push(`- Pickup Efficiency: ${summary.pickupEfficiency.toFixed(1)}%`);
-  sections.push(`- Exploration Engagement: ${summary.explorationEngagement.toFixed(2)} units/second`);
-  sections.push(`- Average Distance Traveled: ${summary.averageDistanceTraveled.toFixed(2)} units`);
+  if (summary.capabilities.pickup.available && summary.pickupEfficiency !== null) {
+    sections.push(`- Pickup Efficiency: ${summary.pickupEfficiency.toFixed(1)}%`);
+  } else if (!summary.capabilities.pickup.available) {
+    sections.push(`- Pickup Efficiency: Telemetry unavailable`);
+  }
+  
+  if (summary.capabilities.movement.available) {
+    if (summary.explorationEngagement !== null) sections.push(`- Exploration Engagement: ${summary.explorationEngagement.toFixed(2)} units/second`);
+    if (summary.averageDistanceTraveled !== null) sections.push(`- Average Distance Traveled: ${summary.averageDistanceTraveled.toFixed(2)} units`);
+  } else {
+    sections.push(`- Movement telemetry: Unavailable`);
+  }
   sections.push('');
   
   // Friction Indicators
   sections.push('### Friction & Risk Indicators');
   sections.push(`- Overall Friction Score: ${summary.frictionScore.toFixed(1)}/100`);
-  sections.push(`- High Death Sessions: ${summary.highDeathSessions} (${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}%)`);
-  sections.push(`- Low Score Sessions: ${summary.lowScoreSessions} (${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}%)`);
+  sections.push(`- High Death Telemetry Entries: ${summary.highDeathSessions} (${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}%)`);
+  sections.push(`- Low Score Telemetry Entries: ${summary.lowScoreSessions} (${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}%)`);
   sections.push(`- Abandonment Rate: ${summary.abandonmentRate.toFixed(1)}%`);
   sections.push('');
   
@@ -54,7 +80,7 @@ export function formatAnalyticsContext(summary: AnalyticsSummary): string {
     sections.push('### Player Behavioral Patterns');
     summary.topBehaviors.forEach(b => {
       sections.push(`- **${b.pattern}**: ${b.description}`);
-      sections.push(`  - Frequency: ${b.frequency.toFixed(1)}% of sessions`);
+      sections.push(`  - Frequency: ${b.frequency.toFixed(1)}% of telemetry entries`);
       sections.push(`  - Impact: ${b.impact}`);
     });
     sections.push('');
@@ -66,7 +92,7 @@ export function formatAnalyticsContext(summary: AnalyticsSummary): string {
     summary.anomalies.forEach(a => {
       sections.push(`- **[${a.severity.toUpperCase()}] ${a.type}**`);
       sections.push(`  - ${a.description}`);
-      sections.push(`  - Affected Sessions: ${a.affectedSessions}`);
+      sections.push(`  - Affected Telemetry Entries: ${a.affectedSessions}`);
     });
     sections.push('');
   }
@@ -231,25 +257,31 @@ export function createComparisonContext(
   
   sections.push(`## Comparative Analysis: ${changeDescription}\n`);
   
-  // Calculate deltas
-  const scoreDelta = ((afterSummary.averageScore - beforeSummary.averageScore) / beforeSummary.averageScore) * 100;
-  const kdDelta = ((afterSummary.killDeathRatio - beforeSummary.killDeathRatio) / beforeSummary.killDeathRatio) * 100;
+  // Calculate deltas (handle null values)
+  const scoreDelta = (beforeSummary.averageScore !== null && afterSummary.averageScore !== null)
+    ? ((afterSummary.averageScore - beforeSummary.averageScore) / beforeSummary.averageScore) * 100
+    : 0;
+  const kdDelta = (beforeSummary.killDeathRatio !== null && afterSummary.killDeathRatio !== null)
+    ? ((afterSummary.killDeathRatio - beforeSummary.killDeathRatio) / beforeSummary.killDeathRatio) * 100
+    : 0;
   const frictionDelta = afterSummary.frictionScore - beforeSummary.frictionScore;
-  const deathDelta = ((afterSummary.averageDeaths - beforeSummary.averageDeaths) / beforeSummary.averageDeaths) * 100;
+  const deathDelta = (beforeSummary.averageDeaths !== null && afterSummary.averageDeaths !== null)
+    ? ((afterSummary.averageDeaths - beforeSummary.averageDeaths) / beforeSummary.averageDeaths) * 100
+    : 0;
   
   sections.push('### Before Metrics');
-  sections.push(`- Sessions: ${beforeSummary.totalSessions.toLocaleString()}`);
-  sections.push(`- Avg Score: ${beforeSummary.averageScore.toFixed(2)}`);
-  sections.push(`- K/D Ratio: ${beforeSummary.killDeathRatio.toFixed(2)}`);
-  sections.push(`- Avg Deaths: ${beforeSummary.averageDeaths.toFixed(2)}`);
+  sections.push(`- Telemetry Entries: ${beforeSummary.totalSessions.toLocaleString()}`);
+  sections.push(`- Avg Score: ${beforeSummary.averageScore?.toFixed(2) ?? 'N/A'}`);
+  sections.push(`- K/D Ratio: ${beforeSummary.killDeathRatio?.toFixed(2) ?? 'N/A'}`);
+  sections.push(`- Avg Deaths: ${beforeSummary.averageDeaths?.toFixed(2) ?? 'N/A'}`);
   sections.push(`- Friction: ${beforeSummary.frictionScore.toFixed(1)}/100`);
   sections.push('');
   
   sections.push('### After Metrics');
-  sections.push(`- Sessions: ${afterSummary.totalSessions.toLocaleString()}`);
-  sections.push(`- Avg Score: ${afterSummary.averageScore.toFixed(2)} (${formatDelta(scoreDelta)})`);
-  sections.push(`- K/D Ratio: ${afterSummary.killDeathRatio.toFixed(2)} (${formatDelta(kdDelta)})`);
-  sections.push(`- Avg Deaths: ${afterSummary.averageDeaths.toFixed(2)} (${formatDelta(deathDelta)})`);
+  sections.push(`- Telemetry Entries: ${afterSummary.totalSessions.toLocaleString()}`);
+  sections.push(`- Avg Score: ${afterSummary.averageScore?.toFixed(2) ?? 'N/A'} (${formatDelta(scoreDelta)})`);
+  sections.push(`- K/D Ratio: ${afterSummary.killDeathRatio?.toFixed(2) ?? 'N/A'} (${formatDelta(kdDelta)})`);
+  sections.push(`- Avg Deaths: ${afterSummary.averageDeaths?.toFixed(2) ?? 'N/A'} (${formatDelta(deathDelta)})`);
   sections.push(`- Friction: ${afterSummary.frictionScore.toFixed(1)}/100 (${formatDelta(frictionDelta, false)})`);
   sections.push('');
   

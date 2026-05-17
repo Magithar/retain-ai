@@ -225,7 +225,7 @@ ${schema}
     }
     
     if (summary.averageDeaths > 4) {
-      areas.push(`Difficulty Balance: ${summary.averageDeaths.toFixed(1)} deaths/session indicates frustration`);
+      areas.push(`Difficulty Balance: ${summary.averageDeaths.toFixed(1)} deaths/entry indicates frustration`);
     }
     
     if (summary.frictionScore > 60) {
@@ -234,7 +234,7 @@ ${schema}
     
     const zeroScoreAnomaly = summary.anomalies?.find((a: any) => a.type === 'Zero Score Sessions');
     if (zeroScoreAnomaly) {
-      areas.push(`Progression Failure: ${zeroScoreAnomaly.affectedSessions} sessions with zero score`);
+      areas.push(`Progression Failure: ${zeroScoreAnomaly.affectedSessions} telemetry entries with zero score`);
     }
     
     if (summary.combatTimePercentage > 60 && summary.averageKills < 5) {
@@ -248,11 +248,11 @@ ${schema}
     const signals: string[] = [];
     
     if (summary.abandonmentRate > 15) {
-      signals.push(`Early Abandonment: ${summary.abandonmentRate.toFixed(1)}% of sessions show early quit patterns`);
+      signals.push(`Early Abandonment: ${summary.abandonmentRate.toFixed(1)}% of telemetry entries show early quit patterns`);
     }
     
     if (summary.highDeathSessions > summary.totalSessions * 0.3) {
-      signals.push(`Death Frustration: ${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}% of sessions have excessive deaths`);
+      signals.push(`Death Frustration: ${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}% of telemetry entries have excessive deaths`);
     }
     
     if (summary.killDeathRatio < 0.8) {
@@ -260,12 +260,12 @@ ${schema}
     }
     
     if (summary.lowScoreSessions > summary.totalSessions * 0.25) {
-      signals.push(`Low Achievement: ${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}% of sessions have minimal progression`);
+      signals.push(`Low Achievement: ${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}% of telemetry entries have minimal progression`);
     }
     
     const combatAvoidance = summary.anomalies?.find((a: any) => a.type === 'Combat Avoidance');
     if (combatAvoidance) {
-      signals.push(`System Avoidance: ${combatAvoidance.affectedSessions} sessions show combat avoidance behavior`);
+      signals.push(`System Avoidance: ${combatAvoidance.affectedSessions} telemetry entries show combat avoidance behavior`);
     }
     
     const highSeverityAnomalies = summary.anomalies?.filter((a: any) => a.severity === 'high') || [];

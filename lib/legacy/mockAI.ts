@@ -76,13 +76,13 @@ export async function generateMockInsights(summary: AnalyticsSummary): Promise<A
 function generateRetentionRisks(summary: AnalyticsSummary): RetentionRisk[] {
   const risks: RetentionRisk[] = [];
   
-  // High death rate risk
-  if (summary.averageDeaths > 3) {
+  // High death rate risk (only if combat telemetry available)
+  if (summary.capabilities.combat.available && summary.averageDeaths !== null && summary.averageDeaths > 3) {
     risks.push({
       title: 'High Player Death Rate',
-      description: `Players are dying an average of ${summary.averageDeaths.toFixed(1)} times per session, which is significantly above healthy benchmarks. This indicates difficulty spikes or unclear game mechanics that frustrate players.`,
+      description: `Players are dying an average of ${summary.averageDeaths.toFixed(1)} times per telemetry entry, which is significantly above healthy benchmarks. This indicates difficulty spikes or unclear game mechanics that frustrate players.`,
       severity: summary.averageDeaths > 5 ? 'high' : 'medium',
-      affectedPlayers: `${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}% of sessions`,
+      affectedPlayers: `${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}% of telemetry entries`,
       recommendation: 'Implement difficulty scaling, add tutorial checkpoints, or introduce resurrection mechanics to reduce frustration. Consider A/B testing easier early-game encounters.'
     });
   }
@@ -91,9 +91,9 @@ function generateRetentionRisks(summary: AnalyticsSummary): RetentionRisk[] {
   if (summary.abandonmentRate > 15) {
     risks.push({
       title: 'High Early Abandonment',
-      description: `${summary.abandonmentRate.toFixed(1)}% of players are achieving very low scores, suggesting they abandon sessions early or fail to engage with core mechanics.`,
+      description: `${summary.abandonmentRate.toFixed(1)}% of players are achieving very low scores, suggesting they abandon early or fail to engage with core mechanics.`,
       severity: summary.abandonmentRate > 25 ? 'high' : 'medium',
-      affectedPlayers: `${summary.lowScoreSessions} sessions`,
+      affectedPlayers: `${summary.lowScoreSessions} telemetry entries`,
       recommendation: 'Improve onboarding flow, add early-game rewards, and ensure first 5 minutes are engaging. Consider implementing a "new player protection" period.'
     });
   }
@@ -109,8 +109,8 @@ function generateRetentionRisks(summary: AnalyticsSummary): RetentionRisk[] {
     });
   }
   
-  // Low K/D ratio risk
-  if (summary.killDeathRatio < 1) {
+  // Low K/D ratio risk (only if combat telemetry available)
+  if (summary.capabilities.combat.available && summary.killDeathRatio !== null && summary.killDeathRatio < 1) {
     risks.push({
       title: 'Negative Kill/Death Ratio',
       description: `Players are dying more than they're killing (K/D: ${summary.killDeathRatio.toFixed(2)}). This creates a sense of failure and powerlessness that drives churn.`,
@@ -127,7 +127,7 @@ function generateRetentionRisks(summary: AnalyticsSummary): RetentionRisk[] {
       title: 'Combat System Avoidance',
       description: combatAvoidanceAnomaly.description,
       severity: combatAvoidanceAnomaly.severity,
-      affectedPlayers: `${combatAvoidanceAnomaly.affectedSessions} sessions`,
+      affectedPlayers: `${combatAvoidanceAnomaly.affectedSessions} telemetry entries`,
       recommendation: 'Combat may be too punishing or unrewarding. Add better combat feedback, increase rewards for combat engagement, and ensure combat is fun rather than frustrating.'
     });
   }
@@ -138,8 +138,8 @@ function generateRetentionRisks(summary: AnalyticsSummary): RetentionRisk[] {
 function generateFrictionPoints(summary: AnalyticsSummary): FrictionPoint[] {
   const frictions: FrictionPoint[] = [];
   
-  // Pickup efficiency friction
-  if (summary.pickupEfficiency < 70) {
+  // Pickup efficiency friction (only if pickup telemetry available)
+  if (summary.capabilities.pickup.available && summary.pickupEfficiency !== null && summary.pickupEfficiency < 70) {
     frictions.push({
       title: 'Item Pickup Interaction Issues',
       description: `Only ${summary.pickupEfficiency.toFixed(1)}% of pickup attempts succeed. This suggests unclear interaction prompts, small hitboxes, or confusing UI feedback.`,
@@ -149,8 +149,8 @@ function generateFrictionPoints(summary: AnalyticsSummary): FrictionPoint[] {
     });
   }
   
-  // Low combat intensity
-  if (summary.combatIntensity < 10) {
+  // Low combat intensity (only if combat telemetry available)
+  if (summary.capabilities.combat.available && summary.combatIntensity !== null && summary.combatIntensity < 10) {
     frictions.push({
       title: 'Slow Combat Pacing',
       description: `Combat intensity of ${summary.combatIntensity.toFixed(2)} damage/second indicates slow, drawn-out fights that may feel tedious rather than exciting.`,
@@ -160,8 +160,8 @@ function generateFrictionPoints(summary: AnalyticsSummary): FrictionPoint[] {
     });
   }
   
-  // Low exploration engagement
-  if (summary.explorationEngagement < 5) {
+  // Low exploration engagement (only if movement telemetry available)
+  if (summary.capabilities.movement.available && summary.explorationEngagement !== null && summary.explorationEngagement < 5) {
     frictions.push({
       title: 'Limited Exploration Incentive',
       description: `Players are moving slowly during exploration (${summary.explorationEngagement.toFixed(2)} units/sec), suggesting lack of interesting content or unclear navigation.`,
@@ -178,13 +178,15 @@ function generateFrictionPoints(summary: AnalyticsSummary): FrictionPoint[] {
       title: 'Score Progression Failure',
       description: zeroScoreAnomaly.description,
       severity: zeroScoreAnomaly.severity,
-      metric: `${zeroScoreAnomaly.affectedSessions} sessions`,
+      metric: `${zeroScoreAnomaly.affectedSessions} telemetry entries`,
       recommendation: 'Ensure score is awarded for all player actions, not just kills. Add score for exploration, survival time, and item collection to prevent zero-score scenarios.'
     });
   }
   
-  // High combat time but low kills
-  if (summary.combatTimePercentage > 60 && summary.averageKills < 5) {
+  // High combat time but low kills (only if combat telemetry available)
+  if (summary.capabilities.combat.available &&
+      summary.combatTimePercentage !== null && summary.averageKills !== null &&
+      summary.combatTimePercentage > 60 && summary.averageKills < 5) {
     frictions.push({
       title: 'Combat Efficiency Problem',
       description: `Players spend ${summary.combatTimePercentage.toFixed(1)}% of time in combat but average only ${summary.averageKills.toFixed(1)} kills, indicating difficulty landing hits or defeating enemies.`,
@@ -224,8 +226,8 @@ function generateMonetizationOpportunities(summary: AnalyticsSummary): Monetizat
     });
   }
   
-  // High engagement players
-  if (summary.averageScore > 1000) {
+  // High engagement players (only if session telemetry available)
+  if (summary.capabilities.session.available && summary.averageScore !== null && summary.averageScore > 1000) {
     opportunities.push({
       title: 'Premium Progression Accelerators',
       description: `High average scores indicate engaged players who invest time. They may pay to progress faster or access exclusive content.`,
@@ -264,8 +266,8 @@ function generateMonetizationOpportunities(summary: AnalyticsSummary): Monetizat
 function generateLiveOpsSuggestions(summary: AnalyticsSummary): LiveOpsSuggestion[] {
   const suggestions: LiveOpsSuggestion[] = [];
   
-  // High death rate - balance event
-  if (summary.averageDeaths > 4) {
+  // High death rate - balance event (only if combat telemetry available)
+  if (summary.capabilities.combat.available && summary.averageDeaths !== null && summary.averageDeaths > 4) {
     suggestions.push({
       title: 'Survival Challenge Event',
       description: 'Launch a limited-time event that rewards players for surviving longer and dying less. This reframes the difficulty as a challenge rather than a problem.',
@@ -275,8 +277,8 @@ function generateLiveOpsSuggestions(summary: AnalyticsSummary): LiveOpsSuggestio
     });
   }
   
-  // Low pickup efficiency - content update
-  if (summary.pickupEfficiency < 70) {
+  // Low pickup efficiency - content update (only if pickup telemetry available)
+  if (summary.capabilities.pickup.available && summary.pickupEfficiency !== null && summary.pickupEfficiency < 70) {
     suggestions.push({
       title: 'Interaction System Overhaul',
       description: 'Deploy a quality-of-life update focused on improving item pickup mechanics, interaction feedback, and UI clarity.',
@@ -298,8 +300,8 @@ function generateLiveOpsSuggestions(summary: AnalyticsSummary): LiveOpsSuggestio
     });
   }
   
-  // Low K/D ratio - balance patch
-  if (summary.killDeathRatio < 1) {
+  // Low K/D ratio - balance patch (only if combat telemetry available)
+  if (summary.capabilities.combat.available && summary.killDeathRatio !== null && summary.killDeathRatio < 1) {
     suggestions.push({
       title: 'Player Empowerment Balance Patch',
       description: 'Release a balance update that increases player power: +15% damage, +20% health, and improved hit detection. Make players feel more capable.',

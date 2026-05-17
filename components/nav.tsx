@@ -24,7 +24,9 @@ export function Nav() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <BarChart3 className="h-6 w-6" />
-              <span className="font-bold text-xl">Retain AI</span>
+              <span className="font-bold text-xl">
+                <span className="text-primary">Retain</span> AI
+              </span>
             </Link>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">

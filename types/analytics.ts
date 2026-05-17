@@ -2,6 +2,8 @@
  * Shared TypeScript types for analytics and telemetry
  */
 
+import { TelemetryCapabilities, DatasetCapabilitySummary } from './telemetry-capabilities';
+
 export interface TelemetryRow {
   itemsCollected?: number;
   pickupAttempts?: number;
@@ -20,18 +22,23 @@ export interface TelemetryRow {
 }
 
 export interface AnalyticsSummary {
+  // Telemetry capabilities
+  capabilities: TelemetryCapabilities;
+  capabilitySummary: DatasetCapabilitySummary;
+  
+  // Core metrics (now nullable when telemetry unavailable)
   totalSessions: number;
-  averageScore: number;
-  averageKills: number;
-  averageDeaths: number;
-  killDeathRatio: number;
-  combatIntensity: number;
-  averageDamageDone: number;
-  averageEnemiesHit: number;
-  combatTimePercentage: number;
-  pickupEfficiency: number;
-  explorationEngagement: number;
-  averageDistanceTraveled: number;
+  averageScore: number | null;
+  averageKills: number | null;
+  averageDeaths: number | null;
+  killDeathRatio: number | null;
+  combatIntensity: number | null;
+  averageDamageDone: number | null;
+  averageEnemiesHit: number | null;
+  combatTimePercentage: number | null;
+  pickupEfficiency: number | null;
+  explorationEngagement: number | null;
+  averageDistanceTraveled: number | null;
   frictionScore: number;
   highDeathSessions: number;
   lowScoreSessions: number;

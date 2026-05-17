@@ -145,7 +145,7 @@ ${schema}
     const critical: string[] = [];
     
     if (summary.averageDeaths > 4) {
-      critical.push(`High death rate: ${summary.averageDeaths.toFixed(1)} deaths/session (target: <3)`);
+      critical.push(`High death rate: ${summary.averageDeaths.toFixed(1)} deaths/entry (target: <3)`);
     }
     
     if (summary.abandonmentRate > 15) {
@@ -161,7 +161,7 @@ ${schema}
     }
     
     if (summary.lowScoreSessions > summary.totalSessions * 0.2) {
-      critical.push(`High low-score sessions: ${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}% (target: <15%)`);
+      critical.push(`High low-score entries: ${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}% (target: <15%)`);
     }
     
     return critical;

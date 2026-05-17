@@ -22,12 +22,11 @@ interface LiveOpsEventCardProps {
 }
 
 const eventTypeConfig = {
-  combat: { 
-    icon: Trophy, 
-    gradient: "from-red-500/20 to-orange-500/20",
-    border: "border-red-500/30",
-    badge: "bg-red-500/10 text-red-400 border-red-500/30"
-  },
+  combat: {
+  icon: Trophy,
+  border: "border-blue-500/10",
+  badge: "bg-blue-500/10 text-blue-400 border-blue-500/20"
+},
   collection: { 
     icon: Sparkles, 
     gradient: "from-purple-500/20 to-pink-500/20",
@@ -68,9 +67,9 @@ const priorityConfig = {
 };
 
 const complexityConfig = {
-  low: { color: "text-green-400", label: "Low Complexity" },
-  medium: { color: "text-yellow-400", label: "Medium Complexity" },
-  high: { color: "text-red-400", label: "High Complexity" }
+  low: { color: "text-green-400", label: "Low complexity" },
+  medium: { color: "text-yellow-400", label: "Medium complexity" },
+  high: { color: "text-red-400", label: "High complexity" }
 };
 
 const revenueConfig = {
@@ -87,8 +86,20 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
   const revenueStyle = revenueConfig[event.monetizationConsiderations.revenueOpportunity];
 
   return (
-    <Card className={`relative overflow-hidden border-2 ${typeConfig.border} bg-gradient-to-br ${typeConfig.gradient} backdrop-blur-sm transition-all hover:shadow-xl hover:scale-[1.02] duration-300`}>
-      {/* Priority Badge - Top Right */}
+<Card
+  className={`
+    relative overflow-hidden
+    border ${typeConfig.border}
+    bg-[#0B1020]
+    backdrop-blur-sm
+    transition-all duration-300
+    shadow-[0_0_25px_rgba(59,130,246,0.03)]
+    before:absolute
+    before:inset-0
+    before:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.05),transparent_22%)]
+    before:pointer-events-none
+  `}
+>      {/* Priority Badge - Top Right */}
       <div className="absolute top-4 right-4 z-10">
         <Badge className={`${priorityStyle.color} border font-semibold`}>
           {priorityStyle.label}
@@ -97,8 +108,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
 
       <CardHeader className="pb-4">
         <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${typeConfig.gradient} ring-2 ${typeConfig.border}`}>
-            <TypeIcon className="h-6 w-6" />
+<div className={`p-3 rounded-xl bg-blue-500/5 ring-1 ${typeConfig.border}`}>            <TypeIcon className="h-6 w-6" />
           </div>
           <div className="flex-1">
             <CardTitle className="text-2xl font-bold mb-2 pr-24">
@@ -113,7 +123,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
         {/* Event Type Badge */}
         <div className="flex gap-2 mt-3">
           <Badge className={`${typeConfig.badge} border`}>
-            {event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)} Event
+            {event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)} event
           </Badge>
           <Badge variant="outline" className="border-muted-foreground/30">
             <Clock className="h-3 w-3 mr-1" />
@@ -131,7 +141,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <Target className="h-4 w-4" />
-            Target Segment
+            Target segment
           </div>
           <div className="pl-6">
             <p className="font-medium text-foreground">{event.targetSegment}</p>
@@ -146,7 +156,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <Trophy className="h-4 w-4" />
-            Reward Structure
+            Reward structure
           </div>
           <div className="pl-6 space-y-2">
             <div className="flex items-start gap-2">
@@ -174,7 +184,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <TrendingUp className="h-4 w-4" />
-            Expected Retention Impact
+            Expected retention impact
           </div>
           <div className="pl-6 grid grid-cols-2 gap-3">
             <div className="p-3 rounded-lg bg-background/50 border border-muted-foreground/20">
@@ -195,17 +205,17 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <DollarSign className="h-4 w-4" />
-            Monetization Opportunity
+            Monetization opportunity
           </div>
           <div className="pl-6 space-y-2">
             <div className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-muted-foreground/20">
-              <span className="text-sm font-medium">Revenue Potential</span>
+              <span className="text-sm font-medium">Revenue potential</span>
               <span className={`text-lg font-bold ${revenueStyle.color}`}>
                 {revenueStyle.icon}
               </span>
             </div>
             <div className="p-3 rounded-lg bg-background/50 border border-muted-foreground/20">
-              <p className="text-xs text-muted-foreground mb-1">Estimated ARPU Impact</p>
+              <p className="text-xs text-muted-foreground mb-1">Estimated ARPU impact</p>
               <p className="text-base font-bold">{event.monetizationConsiderations.estimatedARPU}</p>
             </div>
             <div className="space-y-1">
@@ -253,7 +263,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
             <Target className="h-4 w-4" />
-            Success Metrics
+            Success metrics
           </div>
           <div className="pl-6 flex flex-wrap gap-2">
             {event.kpis.map((kpi, idx) => (
@@ -269,7 +279,7 @@ export function LiveOpsEventCard({ event }: LiveOpsEventCardProps) {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
               <AlertTriangle className="h-4 w-4" />
-              Risk Considerations
+              Risk considerations
             </div>
             <div className="pl-6 space-y-1">
               {event.risks.map((risk, idx) => (

@@ -23,35 +23,42 @@ export function buildInsightPrompt(context: AIPromptContext): string {
 
 ## Telemetry Summary
 
-**Session Metrics:**
-- Total Sessions: ${summary.totalSessions.toLocaleString()}
-- Average Score: ${summary.averageScore.toFixed(2)}
-- Average Kills: ${summary.averageKills.toFixed(2)}
-- Average Deaths: ${summary.averageDeaths.toFixed(2)}
-- Kill/Death Ratio: ${summary.killDeathRatio.toFixed(2)}
+**Dataset Quality:** ${summary.capabilitySummary.quality}
+**Available Telemetry:** ${summary.capabilitySummary.available.join(', ') || 'None'}
+
+**Telemetry Entry Metrics:**
+- Total Telemetry Entries: ${summary.totalSessions.toLocaleString()}
+- Average Score: ${summary.averageScore?.toFixed(2) ?? 'N/A'}
+- Average Kills: ${summary.averageKills?.toFixed(2) ?? 'N/A'}
+- Average Deaths: ${summary.averageDeaths?.toFixed(2) ?? 'N/A'}
+- Kill/Death Ratio: ${summary.killDeathRatio?.toFixed(2) ?? 'N/A'}
 
 **Combat Metrics:**
-- Combat Intensity: ${summary.combatIntensity.toFixed(2)} damage/second
-- Average Damage Done: ${summary.averageDamageDone.toFixed(2)}
-- Average Enemies Hit: ${summary.averageEnemiesHit.toFixed(2)}
-- Combat Time: ${summary.combatTimePercentage.toFixed(1)}% of total playtime
+${summary.capabilities.combat.available ? `
+- Combat Intensity: ${summary.combatIntensity?.toFixed(2) ?? 'N/A'} damage/second
+- Average Damage Done: ${summary.averageDamageDone?.toFixed(2) ?? 'N/A'}
+- Average Enemies Hit: ${summary.averageEnemiesHit?.toFixed(2) ?? 'N/A'}
+- Combat Time: ${summary.combatTimePercentage?.toFixed(1) ?? 'N/A'}% of total playtime
+` : '- Combat telemetry unavailable in uploaded dataset'}
 
 **Engagement Metrics:**
-- Pickup Efficiency: ${summary.pickupEfficiency.toFixed(1)}%
-- Exploration Engagement: ${summary.explorationEngagement.toFixed(2)} units/second
-- Average Distance Traveled: ${summary.averageDistanceTraveled.toFixed(2)} units
+${summary.capabilities.pickup.available ? `- Pickup Efficiency: ${summary.pickupEfficiency?.toFixed(1) ?? 'N/A'}%` : '- Pickup telemetry unavailable'}
+${summary.capabilities.movement.available ? `
+- Exploration Engagement: ${summary.explorationEngagement?.toFixed(2) ?? 'N/A'} units/second
+- Average Distance Traveled: ${summary.averageDistanceTraveled?.toFixed(2) ?? 'N/A'} units
+` : '- Movement telemetry unavailable'}
 
 **Friction Indicators:**
 - Friction Score: ${summary.frictionScore.toFixed(1)}/100
-- High Death Sessions: ${summary.highDeathSessions} (${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}%)
-- Low Score Sessions: ${summary.lowScoreSessions} (${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}%)
+- High Death Telemetry Entries: ${summary.highDeathSessions} (${((summary.highDeathSessions / summary.totalSessions) * 100).toFixed(1)}%)
+- Low Score Telemetry Entries: ${summary.lowScoreSessions} (${((summary.lowScoreSessions / summary.totalSessions) * 100).toFixed(1)}%)
 - Abandonment Rate: ${summary.abandonmentRate.toFixed(1)}%
 
 **Behavioral Patterns:**
-${summary.topBehaviors.map(b => `- ${b.pattern}: ${b.description} (${b.frequency.toFixed(1)}% of sessions, ${b.impact} impact)`).join('\n')}
+${summary.topBehaviors.map(b => `- ${b.pattern}: ${b.description} (${b.frequency.toFixed(1)}% of telemetry entries, ${b.impact} impact)`).join('\n')}
 
 **Detected Anomalies:**
-${summary.anomalies.map(a => `- [${a.severity.toUpperCase()}] ${a.type}: ${a.description} (${a.affectedSessions} sessions)`).join('\n')}
+${summary.anomalies.map(a => `- [${a.severity.toUpperCase()}] ${a.type}: ${a.description} (${a.affectedSessions} telemetry entries)`).join('\n')}
 
 ## Analysis Request
 
@@ -135,11 +142,11 @@ export function buildFocusedPrompt(
 ): string {
   const { summary } = context;
   
-  const baseContext = `Analyzing gameplay telemetry for ${summary.totalSessions} sessions with:
-- Average Score: ${summary.averageScore.toFixed(2)}
-- K/D Ratio: ${summary.killDeathRatio.toFixed(2)}
+  const baseContext = `Analyzing gameplay telemetry for ${summary.totalSessions} telemetry entries with:
+- Average Score: ${summary.averageScore?.toFixed(2) ?? 'N/A'}
+- K/D Ratio: ${summary.killDeathRatio?.toFixed(2) ?? 'N/A'}
 - Friction Score: ${summary.frictionScore.toFixed(1)}/100
-- Pickup Efficiency: ${summary.pickupEfficiency.toFixed(1)}%`;
+- Pickup Efficiency: ${summary.pickupEfficiency?.toFixed(1) ?? 'N/A'}%`;
 
   switch (focusArea) {
     case 'retention':
@@ -148,7 +155,7 @@ export function buildFocusedPrompt(
 Focus: Player Retention Analysis
 
 Key Concerns:
-- ${summary.highDeathSessions} sessions with high death counts
+- ${summary.highDeathSessions} telemetry entries with high death counts
 - ${summary.abandonmentRate.toFixed(1)}% abandonment rate
 - ${summary.anomalies.filter(a => a.severity === 'high').length} high-severity anomalies
 
@@ -170,9 +177,9 @@ Provide 3-5 monetization opportunities that align with observed player behaviors
 Focus: Player Engagement
 
 Metrics:
-- Combat Time: ${summary.combatTimePercentage.toFixed(1)}%
-- Exploration: ${summary.explorationEngagement.toFixed(2)} units/sec
-- Collection: ${summary.pickupEfficiency.toFixed(1)}% efficiency
+- Combat Time: ${summary.combatTimePercentage?.toFixed(1) ?? 'N/A'}%
+- Exploration: ${summary.explorationEngagement?.toFixed(2) ?? 'N/A'} units/sec
+- Collection: ${summary.pickupEfficiency?.toFixed(1) ?? 'N/A'}% efficiency
 
 Provide 3-5 engagement improvement recommendations.`;
 
@@ -182,9 +189,9 @@ Provide 3-5 engagement improvement recommendations.`;
 Focus: Game Balance
 
 Combat Metrics:
-- Combat Intensity: ${summary.combatIntensity.toFixed(2)}
-- Average Deaths: ${summary.averageDeaths.toFixed(2)}
-- K/D Ratio: ${summary.killDeathRatio.toFixed(2)}
+- Combat Intensity: ${summary.combatIntensity?.toFixed(2) ?? 'N/A'}
+- Average Deaths: ${summary.averageDeaths?.toFixed(2) ?? 'N/A'}
+- K/D Ratio: ${summary.killDeathRatio?.toFixed(2) ?? 'N/A'}
 
 Anomalies:
 ${summary.anomalies.slice(0, 3).map(a => `- ${a.type}: ${a.description}`).join('\n')}
@@ -204,22 +211,26 @@ export function buildComparativePrompt(
   afterSummary: AnalyticsSummary,
   changeDescription: string
 ): string {
-  const scoreDelta = ((afterSummary.averageScore - beforeSummary.averageScore) / beforeSummary.averageScore) * 100;
-  const kdDelta = ((afterSummary.killDeathRatio - beforeSummary.killDeathRatio) / beforeSummary.killDeathRatio) * 100;
+  const scoreDelta = (afterSummary.averageScore !== null && beforeSummary.averageScore !== null)
+    ? ((afterSummary.averageScore - beforeSummary.averageScore) / beforeSummary.averageScore) * 100
+    : 0;
+  const kdDelta = (afterSummary.killDeathRatio !== null && beforeSummary.killDeathRatio !== null)
+    ? ((afterSummary.killDeathRatio - beforeSummary.killDeathRatio) / beforeSummary.killDeathRatio) * 100
+    : 0;
   const frictionDelta = afterSummary.frictionScore - beforeSummary.frictionScore;
   
   return `Comparative Analysis: ${changeDescription}
 
 ## Before Metrics
-- Sessions: ${beforeSummary.totalSessions}
-- Avg Score: ${beforeSummary.averageScore.toFixed(2)}
-- K/D Ratio: ${beforeSummary.killDeathRatio.toFixed(2)}
+- Telemetry Entries: ${beforeSummary.totalSessions}
+- Avg Score: ${beforeSummary.averageScore?.toFixed(2) ?? 'N/A'}
+- K/D Ratio: ${beforeSummary.killDeathRatio?.toFixed(2) ?? 'N/A'}
 - Friction: ${beforeSummary.frictionScore.toFixed(1)}/100
 
 ## After Metrics
-- Sessions: ${afterSummary.totalSessions}
-- Avg Score: ${afterSummary.averageScore.toFixed(2)} (${scoreDelta > 0 ? '+' : ''}${scoreDelta.toFixed(1)}%)
-- K/D Ratio: ${afterSummary.killDeathRatio.toFixed(2)} (${kdDelta > 0 ? '+' : ''}${kdDelta.toFixed(1)}%)
+- Telemetry Entries: ${afterSummary.totalSessions}
+- Avg Score: ${afterSummary.averageScore?.toFixed(2) ?? 'N/A'} (${scoreDelta > 0 ? '+' : ''}${scoreDelta.toFixed(1)}%)
+- K/D Ratio: ${afterSummary.killDeathRatio?.toFixed(2) ?? 'N/A'} (${kdDelta > 0 ? '+' : ''}${kdDelta.toFixed(1)}%)
 - Friction: ${afterSummary.frictionScore.toFixed(1)}/100 (${frictionDelta > 0 ? '+' : ''}${frictionDelta.toFixed(1)})
 
 Analyze the impact of this change and provide:
@@ -232,14 +243,14 @@ Analyze the impact of this change and provide:
 /**
  * Extract key metrics for quick summary
  */
-export function extractKeyMetrics(summary: AnalyticsSummary): Record<string, string | number> {
+export function extractKeyMetrics(summary: AnalyticsSummary): Record<string, string | number | null> {
   return {
     totalSessions: summary.totalSessions,
-    averageScore: parseFloat(summary.averageScore.toFixed(2)),
-    killDeathRatio: parseFloat(summary.killDeathRatio.toFixed(2)),
+    averageScore: summary.averageScore !== null ? parseFloat(summary.averageScore.toFixed(2)) : null,
+    killDeathRatio: summary.killDeathRatio !== null ? parseFloat(summary.killDeathRatio.toFixed(2)) : null,
     frictionScore: parseFloat(summary.frictionScore.toFixed(1)),
-    pickupEfficiency: parseFloat(summary.pickupEfficiency.toFixed(1)),
-    combatTimePercentage: parseFloat(summary.combatTimePercentage.toFixed(1)),
+    pickupEfficiency: summary.pickupEfficiency !== null ? parseFloat(summary.pickupEfficiency.toFixed(1)) : null,
+    combatTimePercentage: summary.combatTimePercentage !== null ? parseFloat(summary.combatTimePercentage.toFixed(1)) : null,
     topBehavior: summary.topBehaviors[0]?.pattern || 'None',
     criticalAnomalies: summary.anomalies.filter(a => a.severity === 'high').length
   };

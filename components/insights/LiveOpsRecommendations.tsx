@@ -23,8 +23,8 @@ export function LiveOpsRecommendations({
               <Sparkles className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">LiveOps Event Recommendations</CardTitle>
-              <CardDescription>Generating AI-powered event strategies...</CardDescription>
+              <CardTitle className="text-2xl">LiveOps event recommendations</CardTitle>
+              <CardDescription>Generating AI-powered event strategies</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -51,7 +51,7 @@ export function LiveOpsRecommendations({
               <Sparkles className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">LiveOps Event Recommendations</CardTitle>
+              <CardTitle className="text-2xl">LiveOps event recommendations</CardTitle>
               <CardDescription>No recommendations available</CardDescription>
             </div>
           </div>
@@ -82,7 +82,7 @@ export function LiveOpsRecommendations({
               <Sparkles className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-2xl">LiveOps Event Recommendations</CardTitle>
+              <CardTitle className="text-2xl">LiveOps event recommendations</CardTitle>
               <CardDescription>
                 AI-powered event strategies based on telemetry insights and PM heuristics
               </CardDescription>
@@ -94,7 +94,7 @@ export function LiveOpsRecommendations({
             <div className="p-4 rounded-lg bg-background/50 border border-primary/20">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-muted-foreground">Total Events</span>
+                <span className="text-sm font-medium text-muted-foreground">Total events</span>
               </div>
               <p className="text-3xl font-bold">{recommendations.length}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -105,7 +105,7 @@ export function LiveOpsRecommendations({
             <div className="p-4 rounded-lg bg-background/50 border border-green-500/20">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="h-4 w-4 text-green-400" />
-                <span className="text-sm font-medium text-muted-foreground">High Revenue</span>
+                <span className="text-sm font-medium text-muted-foreground">High revenue</span>
               </div>
               <p className="text-3xl font-bold text-green-400">{highRevenueCount}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -116,7 +116,7 @@ export function LiveOpsRecommendations({
             <div className="p-4 rounded-lg bg-background/50 border border-blue-500/20">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-medium text-muted-foreground">Avg. Impact</span>
+                <span className="text-sm font-medium text-muted-foreground">Avg. impact</span>
               </div>
               <p className="text-3xl font-bold text-blue-400">+15%</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -132,7 +132,7 @@ export function LiveOpsRecommendations({
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-red-500 animate-pulse" />
-            <h3 className="text-lg font-semibold text-red-400">Critical Priority Events</h3>
+            <h3 className="text-lg font-semibold text-red-400">Critical priority events</h3>
           </div>
           <div className="grid grid-cols-1 gap-6">
             {recommendations
@@ -149,7 +149,7 @@ export function LiveOpsRecommendations({
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-orange-500" />
-            <h3 className="text-lg font-semibold text-orange-400">High Priority Events</h3>
+            <h3 className="text-lg font-semibold text-orange-400">High priority events</h3>
           </div>
           <div className="grid grid-cols-1 gap-6">
             {recommendations
@@ -166,7 +166,7 @@ export function LiveOpsRecommendations({
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-yellow-500" />
-            <h3 className="text-lg font-semibold text-yellow-400">Medium Priority Events</h3>
+            <h3 className="text-lg font-semibold text-yellow-400">Medium priority events</h3>
           </div>
           <div className="grid grid-cols-1 gap-6">
             {recommendations
@@ -183,7 +183,7 @@ export function LiveOpsRecommendations({
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="h-1 w-1 rounded-full bg-gray-500" />
-            <h3 className="text-lg font-semibold text-gray-400">Additional Opportunities</h3>
+            <h3 className="text-lg font-semibold text-gray-400">Additional opportunities</h3>
           </div>
           <div className="grid grid-cols-1 gap-6">
             {recommendations
@@ -198,7 +198,7 @@ export function LiveOpsRecommendations({
       {/* Implementation Timeline Suggestion */}
       <Card className="border-muted-foreground/20 bg-muted/5">
         <CardHeader>
-          <CardTitle className="text-lg">Recommended Implementation Timeline</CardTitle>
+          <CardTitle className="text-lg">Recommended implementation timeline</CardTitle>
           <CardDescription>
             Suggested rollout schedule based on priority and resource requirements
           </CardDescription>

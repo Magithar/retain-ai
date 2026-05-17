@@ -284,7 +284,7 @@ export default function UploadPage() {
             className={`
               border-2 border-dashed rounded-lg p-12 text-center transition-colors
               ${isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"}
-              ${parseStatus === "success" ? "border-green-500 bg-green-500/5" : ""}
+              ${parseStatus === "success" ? "border-blue-500 bg-blue-500/5" : ""}
               ${parseStatus === "error" ? "border-red-500 bg-red-500/5" : ""}
             `}
           >
