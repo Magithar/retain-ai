@@ -1,5 +1,3 @@
-> **📦 Project Recently Organized** - The codebase has been restructured for better maintainability. See [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for details.
-
 # 🎮 Retain AI
 
 **AI-powered copilot for live game operations**
@@ -124,45 +122,42 @@ For detailed documentation, see [ANALYTICS_ENGINE.md](docs/ANALYTICS_ENGINE.md)
 
 ---
 
-## 📸 Screenshots
-
-> **Note:** Add screenshots here once the dashboard is deployed
-
-### Dashboard Overview
-![Dashboard](public/dashboard-preview.png)
-
-### Telemetry Upload
-![Upload](public/upload-preview.png)
-
-### AI Insights
-![Insights](public/insights-preview.png)
-
----
-
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐
-│   Game Client   │
-└────────┬────────┘
-         │ Telemetry Events
-         ▼
-┌─────────────────┐
-│  Retain AI API  │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌────────┐ ┌──────────┐
-│ Parser │ │ IBM      │
-│ Engine │ │ Granite  │
-└────┬───┘ └────┬─────┘
-     │          │
-     ▼          ▼
-┌─────────────────┐
-│   Dashboard     │
-│   (Next.js)     │
-└─────────────────┘
+┌─────────────────────────────────────────┐
+│           CSV Telemetry Upload           │
+│   (drag-and-drop, PapaParse, 100k+ rows) │
+└──────────────────┬──────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────┐
+│         Telemetry Capability Detection   │
+│   lib/telemetry/datasetAnalyzer.ts      │
+│   (8 categories, smart field mapping)   │
+└──────────────────┬──────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────┐
+│           Analytics Engine               │
+│         lib/analytics.ts                │
+│   (20+ nullable metrics, anomaly detect) │
+└──────────────────┬──────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────┐
+│         AI Orchestrator                  │
+│       lib/ai/orchestrator.ts            │
+│  Retention │ Friction │ Monetization    │
+│  LiveOps   │ Segmentation Builders      │
+└──────────────────┬──────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────┐
+│         Insights Dashboard               │
+│   components/insights/                  │
+│   6 tabs • 8+ charts • LiveOps events   │
+└─────────────────────────────────────────┘
 ```
 
 ---
@@ -185,13 +180,13 @@ Compare feature variants and get AI insights on which performs better.
 
 ## 🔮 Roadmap
 
-### Phase 1: Core Enhancement (Current)
+### Phase 1: Core Enhancement (Complete)
 - [x] Telemetry capability detection system
 - [x] Heuristic-based intelligence layer
 - [x] LiveOps recommendation engine
 - [x] Achievement analytics system
 - [x] Dataset quality assessment
-- [ ] Complete TypeScript error resolution
+- [x] TypeScript error resolution (zero errors)
 
 ### Phase 2: AI Integration
 - [ ] IBM Granite LLM integration

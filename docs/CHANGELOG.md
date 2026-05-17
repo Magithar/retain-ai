@@ -41,13 +41,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- TypeScript error resolution (~40 remaining null-safety warnings)
 - IBM Granite LLM integration (watsonx.ai, HuggingFace, Ollama)
 - Real-time telemetry streaming support
 - Advanced churn prediction models
 - Multi-game portfolio support
 - REST API for programmatic access
 - Webhook support for real-time events
+- Example datasets for onboarding
+
+## [1.1.1] - 2026-05-17
+
+### Fixed
+- Resolved all ~40 TypeScript null-safety errors — `tsc --noEmit` now passes with zero errors
+  - `lib/ai/generators/liveOpsGenerator.ts` — null guards for combat/pickup metrics
+  - `lib/ai/utils/promptComposer.ts` — null-safe delta calculations
+  - `lib/legacy/promptBuilder.ts` — optional chaining throughout
+  - `lib/ai/utils/heuristicMatcher.ts` — null-coalesced metric map
+  - `lib/ai/examples/usage-example.ts` — mock data updated with capability fields
 
 ## [0.1.0] - 2026-05-16
 

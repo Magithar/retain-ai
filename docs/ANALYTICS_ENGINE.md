@@ -2,72 +2,64 @@
 
 ## Overview
 
-The Retain AI Analytics Engine transforms raw gameplay CSV telemetry into actionable AI-generated product management insights for live games. It provides comprehensive analytics, behavioral pattern detection, and strategic recommendations without requiring backend infrastructure.
-
-## Features
-
-### 📊 Analytics Layer
-- **Session Metrics**: Average scores, kills, deaths, K/D ratios
-- **Combat Analysis**: Combat intensity, damage metrics, engagement time
-- **Player Behavior**: Pickup efficiency, exploration patterns, friction indicators
-- **Anomaly Detection**: Automatic identification of unusual patterns and issues
-- **Behavioral Segmentation**: Classification of player types and play styles
-
-### 🤖 AI Insights Generation
-- **Retention Risk Analysis**: Identifies churn indicators and at-risk player segments
-- **Friction Point Detection**: Highlights UX issues and player pain points
-- **Monetization Opportunities**: Data-driven revenue strategies by player segment
-- **LiveOps Recommendations**: Event and content suggestions based on behavior
-- **Player Insights**: Deep behavioral analysis and segment characteristics
-
-### 📈 Visualization
-- **Interactive Charts**: Combat vs Score, Kills vs Deaths, Score Distribution
-- **Engagement Metrics**: Time distribution, pickup efficiency visualization
-- **Responsive Design**: Dark theme support, mobile-friendly layouts
-- **Real-time Updates**: Dynamic chart rendering with Recharts
+The Retain AI Analytics Engine transforms raw gameplay CSV telemetry into actionable, heuristic-driven insights for live games. It automatically detects what telemetry is available, computes 20+ nullable metrics, and routes data through a modular AI orchestrator — all without requiring a backend or LLM call.
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Upload Page (UI)                         │
-│  - CSV Upload & Parsing (PapaParse)                         │
-│  - Data Preview Table                                        │
-│  - Generate Insights Button                                  │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Analytics Layer (lib/analytics.ts)              │
-│  - generateAnalyticsSummary()                               │
-│  - computeMetrics() functions                               │
-│  - identifyBehaviorPatterns()                               │
-│  - detectAnomalies()                                        │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│           AI Prompt Builder (lib/promptBuilder.ts)           │
-│  - buildInsightPrompt()                                     │
-│  - buildFocusedPrompt()                                     │
-│  - extractKeyMetrics()                                      │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│            Mock AI Layer (lib/mockAI.ts)                     │
-│  - generateMockInsights()                                   │
-│  - Structured JSON responses                                │
-│  - Realistic recommendations                                │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│         Insights Dashboard (components/insights/)            │
-│  - InsightsDashboard: Main container with tabs              │
-│  - InsightCard: Individual insight display                  │
-│  - AnalyticsCharts: Recharts visualizations                 │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                  Upload Page (app/upload/page.tsx)        │
+│  - CSV drag-and-drop (PapaParse, 100k+ rows)             │
+│  - Auto delimiter detection                               │
+│  - Data preview table                                     │
+└────────────────────────┬─────────────────────────────────┘
+                         │
+                         ▼
+┌──────────────────────────────────────────────────────────┐
+│        Telemetry Capability Detection                     │
+│        lib/telemetry/datasetAnalyzer.ts                  │
+│  - Scans CSV headers in O(n) single pass                  │
+│  - Detects 8 categories: combat, pickup, movement,       │
+│    session, monetization, achievement, progression,       │
+│    liveops                                                │
+│  - Smart field mapping (alternative column names)         │
+│  - Confidence scoring per category                        │
+│  - Dataset quality assessment (full/partial/minimal)     │
+└────────────────────────┬─────────────────────────────────┘
+                         │
+                         ▼
+┌──────────────────────────────────────────────────────────┐
+│           Analytics Engine (lib/analytics.ts)             │
+│  - generateAnalyticsSummary()                            │
+│  - Conditional metric computation (null when unavailable) │
+│  - identifyBehaviorPatterns()                            │
+│  - detectAnomalies()                                     │
+│  - frictionScore computation (0–100)                     │
+└────────────────────────┬─────────────────────────────────┘
+                         │
+                         ▼
+┌──────────────────────────────────────────────────────────┐
+│         AI Orchestrator (lib/ai/orchestrator.ts)          │
+│  Builders:                                               │
+│  - retentionBuilder.ts    - churn risk signals           │
+│  - monetizationBuilder.ts - revenue opportunities        │
+│  - liveOpsBuilder.ts      - event recommendations        │
+│  - frictionBuilder.ts     - UX pain points               │
+│  - segmentationBuilder.ts - player behavior types        │
+│  Generators (heuristic):                                 │
+│  - liveOpsGenerator.ts    - AI event cards               │
+│  - achievementInsightGenerator.ts                        │
+└────────────────────────┬─────────────────────────────────┘
+                         │
+                         ▼
+┌──────────────────────────────────────────────────────────┐
+│         Insights Dashboard (components/insights/)         │
+│  - InsightsDashboard.tsx  - 6-tab main container         │
+│  - InsightCard.tsx        - severity-badged insight cards │
+│  - AnalyticsCharts.tsx    - 8+ Recharts visualizations   │
+│  - LiveOpsRecommendations.tsx + LiveOpsEventCard.tsx     │
+│  - DatasetCapabilityPanel.tsx - dataset quality display  │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ## File Structure
@@ -75,281 +67,184 @@ The Retain AI Analytics Engine transforms raw gameplay CSV telemetry into action
 ```
 retain-ai/
 ├── lib/
-│   ├── analytics.ts          # Core analytics engine
-│   ├── promptBuilder.ts      # AI prompt generation
-│   └── mockAI.ts            # Mock AI response layer
+│   ├── analytics.ts                    # Core analytics engine (506 lines)
+│   ├── achievement-analytics.ts        # Achievement system analytics
+│   ├── formatters.ts                   # Data formatting utilities
+│   ├── ai/
+│   │   ├── orchestrator.ts            # AI prompt orchestration (292 lines)
+│   │   ├── builders/                  # Insight builders (5 files)
+│   │   ├── generators/                # Heuristic generators (2 files)
+│   │   ├── intelligence/              # PM heuristics and rules
+│   │   └── utils/                     # Prompt composition utilities
+│   ├── telemetry/
+│   │   └── datasetAnalyzer.ts         # Capability detection (260 lines)
+│   └── legacy/                        # Reference implementation
+│       ├── aiSummary.ts
+│       ├── mockAI.ts
+│       └── promptBuilder.ts
 ├── components/
 │   └── insights/
-│       ├── InsightsDashboard.tsx  # Main dashboard with tabs
-│       ├── InsightCard.tsx        # Individual insight cards
-│       └── AnalyticsCharts.tsx    # Recharts visualizations
+│       ├── InsightsDashboard.tsx
+│       ├── InsightCard.tsx
+│       ├── AnalyticsCharts.tsx
+│       ├── LiveOpsRecommendations.tsx
+│       ├── LiveOpsEventCard.tsx
+│       └── DatasetCapabilityPanel.tsx
 └── app/
     └── upload/
-        └── page.tsx          # Main upload & analytics page
+        └── page.tsx
 ```
 
 ## Data Flow
 
-1. **CSV Upload**: User uploads telemetry CSV via drag-and-drop or file picker
-2. **Parsing**: PapaParse converts CSV to `Record<string, any>[]` format
-3. **Analytics**: `generateAnalyticsSummary()` computes all metrics and patterns
-4. **AI Generation**: `generateMockInsights()` creates structured recommendations
-5. **Visualization**: Dashboard displays insights in categorized tabs with charts
+1. **CSV Upload** — User uploads telemetry CSV via drag-and-drop or file picker
+2. **Parsing** — PapaParse converts CSV to `Record<string, any>[]`, supports 100k+ rows
+3. **Capability Detection** — `DatasetAnalyzer` scans headers and returns `TelemetryCapabilities`
+4. **Analytics** — `generateAnalyticsSummary()` computes metrics conditionally (null when unavailable)
+5. **AI Generation** — Orchestrator runs relevant builders and heuristic generators
+6. **Visualization** — Dashboard renders insights in 6 tabs with charts and event cards
 
 ## Telemetry Schema
 
-Expected CSV columns:
+The engine uses flexible field mapping — alternative column names are automatically recognized.
 
 ```typescript
-interface TelemetryRow {
-  itemsCollected?: number;
-  pickupAttempts?: number;
-  timeNearInteractables?: number;
-  enemiesHit?: number;
-  damageDone?: number;
-  timeInCombat?: number;
-  distanceTraveled?: number;
-  timeOutOfCombat?: number;
-  kills?: number;
-  deaths?: number;
-  score?: number;
-  sessionId?: string;
-  timestamp?: string;
-}
+// Examples of supported column names per category:
+// combat:       kills, player_kills, kill_count | deaths, player_deaths | damageDone
+// session:      score, player_score, final_score | sessionId, session_id
+// pickup:       itemsCollected, items_collected  | pickupAttempts
+// movement:     distanceTraveled, distance_traveled
+// monetization: revenue, purchase_amount, spend  | purchaseCount
+// achievement:  achievementsEarned, achievements_completed
+// progression:  level, player_level, currentLevel
+// liveops:      eventParticipation, participated_in_event
 ```
 
 ## Analytics Metrics
 
+All metrics are nullable (`number | null`). A `null` value means the required telemetry category was not detected in the dataset.
+
 ### Session Metrics
-- **Average Score**: Mean score across all sessions
-- **Average Kills/Deaths**: Combat performance indicators
-- **Kill/Death Ratio**: Overall combat effectiveness
-- **Total Sessions**: Number of gameplay sessions analyzed
+- **averageScore** — Mean score across all sessions
+- **averageKills / averageDeaths** — Combat performance indicators
+- **killDeathRatio** — Overall combat effectiveness
+- **totalSessions** — Number of gameplay sessions analyzed
 
 ### Combat Metrics
-- **Combat Intensity**: Damage per second during combat
-- **Average Damage Done**: Total damage output per session
-- **Average Enemies Hit**: Hit accuracy indicator
-- **Combat Time Percentage**: % of playtime spent in combat
+- **combatIntensity** — Damage per second during combat
+- **averageDamageDone** — Total damage output per session
+- **averageEnemiesHit** — Hit accuracy indicator
+- **combatTimePercentage** — % of playtime spent in combat
 
 ### Engagement Metrics
-- **Pickup Efficiency**: Success rate of item pickup attempts (%)
-- **Exploration Engagement**: Distance traveled per exploration time
-- **Average Distance Traveled**: Total movement per session
+- **pickupEfficiency** — Success rate of item pickup attempts (%)
+- **explorationEngagement** — Distance traveled per exploration time
+- **averageDistanceTraveled** — Total movement per session
 
 ### Friction Indicators
-- **Friction Score**: 0-100 composite score (higher = more friction)
+- **frictionScore** — 0–100 composite score (higher = more friction)
   - Death friction (40% weight)
   - Pickup failure friction (30% weight)
   - Low score friction (30% weight)
-- **High Death Sessions**: Count of sessions with >5 deaths
-- **Low Score Sessions**: Sessions below 30% of average score
-- **Abandonment Rate**: % of low-engagement sessions
+- **highDeathSessions** — Sessions with >5 deaths
+- **lowScoreSessions** — Sessions below 30% of average score
+- **abandonmentRate** — % of low-engagement sessions
 
 ## Behavioral Patterns
 
-The engine automatically identifies:
+Automatically detected from available telemetry:
 
-1. **Combat-Focused**: Players spending >50% time in combat
-2. **Explorer**: Players traveling >150% of median distance
-3. **Collector**: Players collecting >150% of median items
-4. **High Difficulty**: Players with >5 deaths per session
-5. **Low Engagement**: Players with <30% of average score
+| Pattern | Condition |
+|---------|-----------|
+| Combat-Focused | >50% playtime in combat |
+| Explorer | >150% of median distance traveled |
+| Collector | >150% of median items collected |
+| High Difficulty | >5 deaths per session average |
+| Low Engagement | <30% of average score |
 
 ## Anomaly Detection
 
-Automatic detection of:
+- **Extreme Death Rate** — Sessions with deaths >2 standard deviations above mean
+- **Zero Score Sessions** — Sessions with no progression
+- **Low Pickup Success** — <50% pickup efficiency
+- **Combat Avoidance** — Sessions with zero combat engagement
 
-- **Extreme Death Rate**: Sessions with deaths >2 standard deviations above mean
-- **Zero Score Sessions**: Sessions with no progression
-- **Low Pickup Success**: <50% pickup efficiency
-- **Combat Avoidance**: Sessions with zero combat engagement
+## Insight Categories
 
-## AI Insights Categories
-
-### 1. Retention Risks
-Identifies churn indicators:
-- High death rates
-- Early abandonment patterns
-- Excessive friction
-- Negative K/D ratios
-- Combat avoidance
-
-### 2. Friction Points
-Highlights UX issues:
-- Item pickup problems
-- Slow combat pacing
-- Limited exploration incentive
-- Score progression failures
-- Combat efficiency problems
-
-### 3. Monetization Opportunities
-Revenue strategies by segment:
-- Cosmetic collections for Collectors
-- Power-ups for Combat Enthusiasts
-- Progression accelerators for High Performers
-- Exploration content for Explorers
-- Convenience items for Casual Players
-
-### 4. LiveOps Suggestions
-Event and content recommendations:
-- Survival challenges for high-death scenarios
-- Interaction system overhauls
-- Combat tournaments
-- Balance patches
-- Collection events
-- Daily challenge systems
-
-### 5. Player Insights
-Behavioral segment analysis:
-- Combat Enthusiasts
-- Explorers
-- Collectors
-- Struggling Players
-- At-Risk Players
-- Balanced Players
+| Tab | What It Shows |
+|-----|--------------|
+| Overview | KPI cards, 8+ interactive charts, dataset capability panel |
+| Risks | Retention risks, churn indicators, at-risk segments |
+| Friction | UX pain points, friction score breakdown |
+| Revenue | Monetization opportunities by player segment |
+| LiveOps | AI-generated event recommendations with timing & targeting |
+| Players | Behavioral segment analysis and characteristics |
 
 ## Usage
 
-### Basic Usage
-
 ```typescript
 import { generateAnalyticsSummary } from '@/lib/analytics';
-import { generateMockInsights } from '@/lib/mockAI';
+import { generateMockInsights } from '@/lib/legacy/mockAI';
 
-// After parsing CSV
+// After parsing CSV with PapaParse
 const summary = generateAnalyticsSummary(parsedRows);
+// summary.capabilities tells you what telemetry was detected
+// Metrics like summary.killDeathRatio may be null if combat data is absent
+
 const insights = await generateMockInsights(summary);
 ```
 
-### Component Integration
-
 ```tsx
-import { InsightsDashboard } from '@/components/insights/InsightsDashboard';
+import InsightsDashboard from '@/components/insights/InsightsDashboard';
 
-<InsightsDashboard 
+<InsightsDashboard
   insights={aiInsights}
   summary={analyticsSummary}
   isLoading={isGeneratingInsights}
 />
 ```
 
-## Customization
+## Adding New Metrics
 
-### Adding New Metrics
-
-1. Add computation function to `lib/analytics.ts`:
+1. Add a nullable field to `AnalyticsSummary` in `types/analytics.ts`:
 ```typescript
-export function computeNewMetric(data: TelemetryRow[]): number {
-  // Your calculation logic
-  return result;
+newMetric: number | null;
+```
+
+2. Compute it conditionally in `lib/analytics.ts`:
+```typescript
+newMetric: capabilities.someCategory.available
+  ? computeNewMetric(data)
+  : null,
+```
+
+3. Add null-safe usage in any builder or generator:
+```typescript
+if (summary.newMetric !== null && summary.newMetric > threshold) {
+  // generate insight
 }
 ```
 
-2. Add to `AnalyticsSummary` interface
-3. Include in `generateAnalyticsSummary()`
+## Performance
 
-### Adding New Insight Types
-
-1. Define interface in `lib/mockAI.ts`:
-```typescript
-export interface NewInsightType {
-  title: string;
-  description: string;
-  // ... other fields
-}
-```
-
-2. Add generation function
-3. Include in `AIInsights` interface
-4. Add tab to `InsightsDashboard`
-
-### Customizing Charts
-
-Edit `components/insights/AnalyticsCharts.tsx`:
-- Add new chart components
-- Modify existing visualizations
-- Adjust colors and styling
-- Add interactive features
-
-## Performance Considerations
-
-- **Large Files**: Parser handles up to 10MB CSV files
-- **Progress Tracking**: Real-time progress updates during parsing
-- **Lazy Loading**: Charts render only when visible
-- **Memoization**: Analytics computed once per dataset
-- **Responsive**: Charts adapt to container size
-
-## Future Enhancements
-
-### Phase 1: Real AI Integration
-- Replace mock layer with IBM Granite API
-- Implement actual LLM-based insight generation
-- Add prompt engineering optimizations
-
-### Phase 2: Advanced Analytics
-- Time-series analysis
-- Cohort analysis
-- A/B test result interpretation
-- Predictive churn modeling
-
-### Phase 3: Export & Reporting
-- PDF report generation
-- Excel export with charts
-- Shareable insight links
-- Email digest functionality
-
-### Phase 4: Collaboration
-- Team comments on insights
-- Action item tracking
-- Implementation status updates
-- Historical comparison
-
-## Best Practices
-
-1. **Data Quality**: Ensure CSV has all expected columns
-2. **Sample Size**: Minimum 100 sessions for reliable insights
-3. **Regular Analysis**: Upload new data weekly for trend tracking
-4. **Action Items**: Prioritize high-severity insights first
-5. **Validation**: A/B test recommendations before full rollout
-
-## Troubleshooting
-
-### No Insights Generated
-- Check CSV has required columns
-- Verify data contains numeric values
-- Ensure minimum 10 rows of data
-
-### Charts Not Displaying
-- Check browser console for errors
-- Verify Recharts is installed
-- Ensure data arrays are not empty
-
-### Incorrect Metrics
-- Validate CSV column names match expected schema
-- Check for null/undefined values in data
-- Verify numeric columns are properly typed
+- **CSV Parsing** — Handles up to 10MB files with real-time progress tracking
+- **Capability Detection** — O(n) single-pass header scan, negligible overhead
+- **Analytics** — Computed once per dataset upload, memoized in component state
+- **Charts** — Rendered with Recharts, adapt to container size
 
 ## Dependencies
 
-- **Next.js 15**: React framework
-- **TypeScript**: Type safety
-- **PapaParse**: CSV parsing
-- **Recharts**: Chart library
-- **shadcn/ui**: UI components
-- **Tailwind CSS**: Styling
+| Package | Version | Purpose |
+|---------|---------|---------|
+| Next.js | 16 | React framework |
+| React | 19 | UI library |
+| TypeScript | 5 | Type safety |
+| PapaParse | latest | CSV parsing |
+| Recharts | latest | Chart library |
+| shadcn/ui | latest | UI components |
+| Tailwind CSS | v4 | Styling |
+| Framer Motion | latest | Animations |
 
 ## License
 
-MIT License - See LICENSE file for details
-
-## Support
-
-For issues or questions:
-1. Check this documentation
-2. Review code comments
-3. Open GitHub issue
-4. Contact development team
-
----
-
+MIT — see [LICENSE.md](LICENSE.md)
